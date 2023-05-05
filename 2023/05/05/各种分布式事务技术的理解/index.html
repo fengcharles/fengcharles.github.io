@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>各种分布式事务技术的理解 | Von的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="开发至今项目中从来有没有用过分布式事务，之前对分布式事务的理解，都是从网上到处看，到处翻，从来也没有系统的看过。借着研究SpringColudNacos源码的时候，无意间看到了阿里巴巴的Seata项目。也就顺便研究了一下原理。 为了应付面试，从网上到处找分布式事务相关的内容，一会看PC,一会又翻到TCC。看了一堆原理，文章质量参差不齐，不清楚他们之间的关系，有时候把协议当成框架，有时候又把框架当成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="各种分布式事务技术的理解">
+<meta property="og:url" content="http://example.com/2023/05/05/%E5%90%84%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%8A%80%E6%9C%AF%E7%9A%84%E7%90%86%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Von的个人博客">
+<meta property="og:description" content="开发至今项目中从来有没有用过分布式事务，之前对分布式事务的理解，都是从网上到处看，到处翻，从来也没有系统的看过。借着研究SpringColudNacos源码的时候，无意间看到了阿里巴巴的Seata项目。也就顺便研究了一下原理。 为了应付面试，从网上到处找分布式事务相关的内容，一会看PC,一会又翻到TCC。看了一堆原理，文章质量参差不齐，不清楚他们之间的关系，有时候把协议当成框架，有时候又把框架当成">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-05-05T07:58:39.000Z">
+<meta property="article:modified_time" content="2023-05-05T07:58:58.046Z">
+<meta property="article:author" content="冯银鹏">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Von的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Von的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-各种分布式事务技术的理解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/%E5%90%84%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%8A%80%E6%9C%AF%E7%9A%84%E7%90%86%E8%A7%A3/" class="article-date">
+  <time datetime="2023-05-05T07:58:39.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      各种分布式事务技术的理解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>开发至今项目中从来有没有用过分布式事务，之前对分布式事务的理解，都是从网上到处看，到处翻，从来也没有系统的看过。借着研究SpringColudNacos源码的时候，无意间看到了阿里巴巴的Seata项目。也就顺便研究了一下原理。</p>
+<p>为了应付面试，从网上到处找分布式事务相关的内容，一会看PC,一会又翻到TCC。看了一堆原理，文章质量参差不齐，不清楚他们之间的关系，有时候把协议当成框架，有时候又把框架当成算法。又不知道怎么运用到实际开发环境当中去。面试的时候基本也在瞎扯。</p>
+<p>整体梳理了一遍之后，我总结一下对分布式事务的总体理解，本文不做原理详细的讲解。</p>
+<p>下面几个名词之间的关系：</p>
+<ul>
+<li>2PC/3PC是协议 是算法。并不是具体实现。</li>
+<li>XA规范是基于2PC协议制定的一种规范，规范描述了全局的事务管理器与局部的资源管理器之间的接口，XA使用两阶段提交来保证所有资源同时提交或回滚任何特定的事务</li>
+<li>各家数据库根据XA规范设计出自己的分布式事务功能。</li>
+<li>TCC是通过代码实现分布式事务的一种开发模式。</li>
+<li>Saga也是一种算法或者实现模式。</li>
+</ul>
+<h2 id="分布式事务理论"><a href="#分布式事务理论" class="headerlink" title="分布式事务理论"></a>分布式事务理论</h2><h3 id="2PC（Two-phase-commit-protocol）的概念。"><a href="#2PC（Two-phase-commit-protocol）的概念。" class="headerlink" title="2PC（Two-phase commit protocol）的概念。"></a>2PC（Two-phase commit protocol）的概念。</h3><p>简单明了的解释，之前开发的时候都使用的事务都是直接提交，现在多了一个预提交的概念，此时相当于提交，但是不真正提交。确定其他事务无误后，再调用数据库提交接口真正提交。由于这个方案对性能影响比较大，mysql使用2阶段提交直接将事务级别提升至序列化。但凡用到分布式环境的流量一般都比较大，使用此方案的比较少。</p>
+<h3 id="3PC（Three-phase-commit-protocol）的概念"><a href="#3PC（Three-phase-commit-protocol）的概念" class="headerlink" title="3PC（Three-phase commit protocol）的概念"></a>3PC（Three-phase commit protocol）的概念</h3><p>CanCommit、PreCommit 和 DoCommit 三个阶段<br>由于2PC，在单点故障的情况下，会有资源锁死的问题，所以3PC在2PC的概念加上了超时的机制，且增加了一个CanCommit阶段。相当于2PC的升级版本。但整体的交互过程更长了，性能有所下降，并且还是会存在数据不一致问题。<br>网上关于3阶段提交的资料极少，基本都是描述理论过程。没有找到具体的实现。</p>
+<h3 id="XA规范"><a href="#XA规范" class="headerlink" title="XA规范"></a><a target="_blank" rel="noopener" href="http://pubs.opengroup.org/onlinepubs/009680699/toc.pdf">XA规范</a></h3><p>分布式事务其实很早就提出了，最早的提出的分布式事务的是<strong>XA规范</strong>，XA是由X/Open组织提出的分布式事务的规范，主要是给数据库提供一个标准，各家数据库可以根据这个标准完成自己的分布式事务协议。mysql从1.5版本开始innodb开始支持XA规范。</p>
+<h3 id="TCC-Try-Confirm-Cancel"><a href="#TCC-Try-Confirm-Cancel" class="headerlink" title="TCC (Try Confirm Cancel)"></a>TCC (Try Confirm Cancel)</h3><p>上面两段2pc和3pc的概念都是基于数据库事务功能的，TCC概念是脱离数据库，直接用嵌入业务代码的方式实现。每个需要实现分布式事务的业务代码，都需要写。</p>
+<ul>
+<li>try阶段 将所有调用链相关的数据都做成预处理状态，比如订单修改成待更新，库存修改成待修改预扣。说白了就是都增加一个中间的过渡状态。</li>
+<li>confirm阶段 当所有的try都成功了，那么就可以进入提交阶段了，将上述的订单修改成已完成，库存修改成扣减。</li>
+<li>cancel阶段 如果有一个没成功，那么整体撤销，调用各个微服务的代码将中间状态撤回。</li>
+</ul>
+<p>从描述上已经看到了，这么一套代码写下来，调试成功，人都累死了。各种异常再排列组合，测试还不一定能测到全部的异常。如果再多几套分布式事务，估计没几个人想写这快代码。好的一点是，这块可以使用国内的几个开源框架，减缓不少负担。例如：ByteTCC，TCC-transaction，Himly。</p>
+<h3 id="Saga"><a href="#Saga" class="headerlink" title="Saga"></a>Saga</h3><p>这个模式是来自于1987年Hector GM和Kenneth Salem论文（那个年代，我还没出生，分布式事务的解决概念都已经抛出来了，想想我们国家落后了多少）。<br>saga的解决方法分为两种</p>
+<ol>
+<li>基于事件传递（编排 Choreography）的解决方案。<br>具体就是，微服务调用顺序提前编排好，每个微服务都处理好自己的事务之后，通知下层微服务，或者下层微服务自己监听事件，来处理自己的事件，中间如果有处理异常的事务，可以返回失败事件，上层服务再回滚处理，一层层回滚。 这种默认基本都不推荐用，因为事件一旦过多，监听的逻辑理解起来比较复杂，编排不好，还会出现循环引用。</li>
+<li>基于协调（协调者 Orchestration）的解决方案<br>增加协调者模块，协调者主要负责各个微服务之间的调用关系，回滚关系。每个微服务按照协调者的指令办事就行。<br>由于协调者要处理各个微服务之间的状态，所以最好的实现方式是使用状态机来实现协调者的功能。</li>
+</ol>
+<hr>
+<h2 id="Seata"><a href="#Seata" class="headerlink" title="Seata"></a>Seata</h2><p>seata 是阿里巴巴开源出的一款关于分布式事务的解决方案和框架。<br>为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。</p>
+<h3 id="AT模式-（Automatic-Branch-Transaction-Mode）"><a href="#AT模式-（Automatic-Branch-Transaction-Mode）" class="headerlink" title="AT模式 （Automatic (Branch) Transaction Mode）"></a>AT模式 （Automatic (Branch) Transaction Mode）</h3><p>这个模式不知道是不是Seata自创的，没找着相关的出处资料。上面看过那么多的解决方案，感觉AT模式相当于集合各家的优点，并且依照实际开发中的场景（接地气），创造出来的一个分布式事务管理方案。他的原理里面能从上面几种模式中都能找到影子。比如二阶段的模式，TC协调者，回滚机制。</p>
+<p>AT模式大概是2PC模式的一种变种，也是分为两阶段。<br>第一阶段开启一个大事务，各个微服务开启小事务，小事务做完马上就把本地事务全部提交了，并且生成一个回滚的信息，这个回滚信息是通过Seata的数据库代理实现的，主要会从数据库操作语句中提炼出回滚信息。</p>
+<p>第二阶段TC根据全部微服务的提交状态，决定大事务是否是整体提交还是整体回滚。如果TC发现微服务全部提交成功，就把大事务提交，大事务提交以后会删除回滚信息，以及其他一些工作。如果TC发现只有部分微服务提交成功，就把大事务回滚，里面的微服务一个个根据回滚信息全部回滚。</p>
+<p>这种问题情况想肯定会碰到脏读的问题，所以又引入了全局锁，和本地锁的概念，用来限制脏读发生。</p>
+<h3 id="XA模式"><a href="#XA模式" class="headerlink" title="XA模式"></a>XA模式</h3><p>有了上面XA相关的理论支持，这个就可以很好理解了，基于数据库的XA规范实现。他与AT模式的切换只要通过 Seata 的数据源切换即可完成。</p>
+<h3 id="TCC模式"><a href="#TCC模式" class="headerlink" title="TCC模式"></a>TCC模式</h3><p>seata将tcc模式也抽象成两个阶段，不过这两个阶段。<br>第一阶段 准备<br>第二阶段 提交<br>第二阶段 回滚<br>区别就是 所有阶段的处理，都需要自己写业务代码来实现。seata只负责框架层的调度。<br>一般使用seata的都希望使用他们的特性来减轻开发复杂度的。所以这个模式官方介绍的很少。</p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>本文主要介绍了一些如何理解分布式事务的协议和框架，旨在于梳理技术和帮助概念理解。具体的详细技术细节，请参考引用链接。有理解错误的地方，欢迎留言指正。</p>
+<h2 id="参考引用"><a href="#参考引用" class="headerlink" title="参考引用"></a>参考引用</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/X/Open_XA">维基百科 X/Open XA</a><br><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/xa.html">Mysql 官方文档 Mysql-XA</a><br><a target="_blank" rel="noopener" href="http://www.tianshouzhi.com/api/tutorials/distributed_transaction">分布式事务概述</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jajian/p/10014145.html">TCC分布式事务</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/95852045">Saga分布式事务</a><br><a target="_blank" rel="noopener" href="http://seata.io/zh-cn/docs/overview/what-is-seata.html">Seata 官网</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/%E5%90%84%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%8A%80%E6%9C%AF%E7%9A%84%E7%90%86%E8%A7%A3/" data-id="clha9qkc800077u9k61nf0aan" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          字符串相似度比较（编辑距离算法）
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/05/05/Sentinel-%E5%92%8C-Hystrix-%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Sentinel 和 Hystrix 技术选型对比</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/05/JAVA8-%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%8E%BB%E9%87%8D%E5%86%99%E6%B3%95/">JAVA8 列表对象去重写法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/">用python写了两个爬虫</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">一致哈希算法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/">Dom4j + Gradle 使用问题</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/">字符串相似度比较（编辑距离算法）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 冯银鹏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

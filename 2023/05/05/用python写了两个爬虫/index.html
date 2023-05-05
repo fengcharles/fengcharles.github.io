@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>用python写了两个爬虫 | Von的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近半年内，有两件事比较关心，一件是新买的房子销售情况咋样，另一件是新买的房子旁边的路啥时候修。 好的一点是，这两件事情，都可以通过网站查询，就是登陆输入验证码比较繁琐。而且我又想每天都知道进展。 作为一名工程师，工程师思维必须是优先具备的，这种繁琐重复的事情为什么不交给程序去解决。正好前段时间我的几台服务器docker环境和网络环境都搭建好了，写两个爬虫充实一下。 为什么使用Python去写？J">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用python写了两个爬虫">
+<meta property="og:url" content="http://example.com/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/index.html">
+<meta property="og:site_name" content="Von的个人博客">
+<meta property="og:description" content="最近半年内，有两件事比较关心，一件是新买的房子销售情况咋样，另一件是新买的房子旁边的路啥时候修。 好的一点是，这两件事情，都可以通过网站查询，就是登陆输入验证码比较繁琐。而且我又想每天都知道进展。 作为一名工程师，工程师思维必须是优先具备的，这种繁琐重复的事情为什么不交给程序去解决。正好前段时间我的几台服务器docker环境和网络环境都搭建好了，写两个爬虫充实一下。 为什么使用Python去写？J">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-05-05T08:01:24.000Z">
+<meta property="article:modified_time" content="2023-05-05T08:01:41.985Z">
+<meta property="article:author" content="冯银鹏">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Von的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Von的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-用python写了两个爬虫" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/" class="article-date">
+  <time datetime="2023-05-05T08:01:24.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      用python写了两个爬虫
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近半年内，有两件事比较关心，一件是新买的房子销售情况咋样，另一件是新买的房子旁边的路啥时候修。</p>
+<p>好的一点是，这两件事情，都可以通过网站查询，就是登陆输入验证码比较繁琐。<br>而且我又想每天都知道进展。</p>
+<p>作为一名工程师，工程师思维必须是优先具备的，这种繁琐重复的事情为什么不交给程序去解决。正好前段时间我的几台服务器docker环境和网络环境都搭建好了，写两个爬虫充实一下。</p>
+<h4 id="为什么使用Python去写？"><a href="#为什么使用Python去写？" class="headerlink" title="为什么使用Python去写？"></a>为什么使用Python去写？</h4><p>Java写东西已经很熟悉了，写起来没啥挑战，也没啥成长。Python我作为一门辅修的脚本语言，写起来要比java快很多，也可以通过写爬虫多学习学习。</p>
+<h4 id="下面介绍一下商品房销售情况的爬虫实现原理"><a href="#下面介绍一下商品房销售情况的爬虫实现原理" class="headerlink" title="下面介绍一下商品房销售情况的爬虫实现原理"></a>下面介绍一下<strong>商品房销售情况</strong>的爬虫实现原理</h4><p>不得不吹一下上海的IT系统建设还是很全面的，目前上海市所有区域，楼盘销售情况，都可以通过 <a target="_blank" rel="noopener" href="http://www.fangdi.com.cn/index.html">网上房地产</a> 进行查询。</p>
+<p>这个爬虫写起来稍微有点费劲，因为本身网站是反爬的，为了不让客户端，获取到访问的接口来直接调用。每次客户端获取页面都会通过JS加密生成一段新的Token,这个Token会作为参数和其他参数一起提交来调用服务端接口。</p>
+<p>解密是不可能了，费时费力还不一定有结果。只能通过页面渲染完成以后在Html页面抓取想要的结果了，但是这个网站html渲染之前，要经过大量的后端Ajax访问，最后生成页面。不能通过简简单单直接拉页面过来。</p>
+<p>研究了很久，所以最后使用的技术是 <strong>Selenium</strong> 。简单来说这个是Python的的第三方模块，这个模块可以完全模拟浏览器来访问页面，支持 Chrome,Firefox,Safari 的主流浏览器。这个技术发明本身是用来做自动化测试的。谁知道阴差阳错的被人用来做爬虫反而更加实用。</p>
+<p>代码寥寥数百行，功能就实现了。写起来确实比java方便的多，这个脚本每隔半个小时访问一次该网站，如果销售数量发生变化以后，会给我发送微信消息。同时学习了以下几个技术：</p>
+<p><strong>Python</strong>：类的创建以及使用，变量作用域，主线程睡眠，循环的使用，异常处理，虚拟环境搭建以及使用。</p>
+<p><strong>Docker</strong>： Dockerfile文件的创建使用，Docker基础镜像文件生成规则。镜像上传到Docker Hub库，远程获取，全套部署流程。</p>
+<h4 id="家门口的路何时修建爬虫实现原理"><a href="#家门口的路何时修建爬虫实现原理" class="headerlink" title="家门口的路何时修建爬虫实现原理"></a>家门口的路何时修建爬虫实现原理</h4><p>家门口的路何时修建的问题，本身是没有网站公布的，这个属于政府管理，上海各个区域各个镇都有自己的网站政务公开项目，比如浦东新区的政务公开会在这个网站<a target="_blank" rel="noopener" href="http://www.pudong.gov.cn/shpd/InfoOpen/DeptList.aspx?DeptId=005025">浦东政务</a>进行发布，经过我的研究观察，一条路从规划，到修建中间有漫漫长的步骤。规划，动迁，招标，土地属性变更申请，正式动工，通车。这些步骤都会通过PDF文件的形式进行公布。从这里获取数据太难了。</p>
+<p>机智的我有一次在逛本地论坛的时候看见 <a target="_blank" rel="noopener" href="https://qxf.sh.gov.cn/310115">上海网上信访中心</a> 如获至宝，这个网站你可以以公开信的方式，讯问政府土地建设规划问题。那我家门口的路不就可以问吗？</p>
+<p>实名写信提交以后，过了两周回复我说，已经开始受理了，预计<strong>60个</strong>工作日给答复。看到这个时间。。。。无语了。还没有主动通知，必须每天登陆输入验证码，各种跳转后，才能看到处理状态和结果。</p>
+<p>那好吧，既然这样繁琐，爬虫搞起来。原理很简单，搞个自动登录，半个小时获取一次页面信息，如果是处理成功，就微信消息通知我。</p>
+<p>研究了一些这个网站，url后缀居然是.do结尾的 上次看到这个标识，大概是10多年前学java的时候了。可想而知得多老的一个系统哇。 反爬虫肯定是没有了，能有人维护这个古董网站已经不容易了。</p>
+<p>搞起来很轻松，Python的requests模块 什么都搞定了。</p>
+<p>开发难点就是验证码识别登录问题，如果是简单的点的验证码，可以通过对图像进行灰度，二值，降噪三连加上使用pytesseract文字识别，就很容易解决了。</p>
+<p>遗憾的是这个验证码还是有点难度的，但是在AI，机器学习横行的年代，这古董网站的验证码很容易通过CNN（卷积神经网络） 机器学习训练识别。各种方式找了好久刚开始走了弯路，想通过tesseract-ocr 4.0 自己手动标记，训练字库的方式，后来发现文档实在是太少，自己研究以后，发现自己是进入了另一个学科领域。后来放弃了。</p>
+<p>本来想着手动搞搞验证码算了，这个领域实在太难了，可是无意中又找到一个神器 muggle-ocr，他是基于captcha_trainer，训练出来的验证码识别包， 可以对市面上大多数的验证码进行识别，而且准确率异常的高。入手非常简单，3行代码就可以搞定。</p>
+<p>缺点是引用的包太多，打docker包，光是引进一个muggle-ocr相关的依赖引用，就1.2个G。为了配合引用机器学习的相关操作系统包，又多了500M。</p>
+<p>总之是脚本是完整运转起来了。整体流程就是，生成会话，获取登录页面，获取验证码，验证码图片保存到本地，机器识别以后，模拟登陆，然后跳转到处理页面，拉取状态。成功通知我，不成功继续刷新获取。</p>
+<h4 id="写Python过程中的几点感悟"><a href="#写Python过程中的几点感悟" class="headerlink" title="写Python过程中的几点感悟"></a>写Python过程中的几点感悟</h4><p>这两个功能业余时间写的，陆陆续续写了一个月，中间隔了个春节假期。</p>
+<p>写爬虫时间都花费在了 如何使用python，环境搭建，语法和类库规则面。真正的代码逻辑非常简单。发现切换语言开发起来，思路非常清晰，想实现什么功能，找文档查查就行了。无非就是换了一种写法而已。</p>
+<p>思维和正确的方法才是最主要的，思维这个东西是常年开发训练出来的，相当于武学中，修炼好了内功，招式用什么刀，什么剑都是次要的。</p>
+<p>另外吐槽一下网上热火朝天打广告的学习Python,我发现广告页面居然要比技术文档页面要多的多。。。 而且即使搜到文档，质量都奇差无比，跟java的文档质量都不在一个档次上面。而且Python2和Python3居然是两种语言，搞环境就折腾了好久。</p>
+<p>但是 Python写这种东西就是简单。有一说一。没有类型检查，不用定义返回值。跟个玩具一样。</p>
+<p>以后决定写小东西就用Python了。轻巧灵活。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/" data-id="clha9qkc800087u9kfpx3090x" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/05/JAVA8-%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%8E%BB%E9%87%8D%E5%86%99%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JAVA8 列表对象去重写法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">一致哈希算法</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/05/JAVA8-%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%8E%BB%E9%87%8D%E5%86%99%E6%B3%95/">JAVA8 列表对象去重写法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/">用python写了两个爬虫</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">一致哈希算法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/">Dom4j + Gradle 使用问题</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/">字符串相似度比较（编辑距离算法）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 冯银鹏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

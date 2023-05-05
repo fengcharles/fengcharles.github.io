@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Dom4j + Gradle 使用问题 | Von的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="问题在Java11下开发XML文件读取功能，使用Gradle做包的依赖管理，引入Dom4j包以后，读取Xml发生了异常。 调用方式 12345SAXReader reader &#x3D; new SAXReader();File file &#x3D; new File(&quot;&#x2F;Users&#x2F;von&#x2F;Downloads&#x2F;untitled.xml&quot;);Document document &#x3D; reader">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dom4j + Gradle 使用问题">
+<meta property="og:url" content="http://example.com/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Von的个人博客">
+<meta property="og:description" content="问题在Java11下开发XML文件读取功能，使用Gradle做包的依赖管理，引入Dom4j包以后，读取Xml发生了异常。 调用方式 12345SAXReader reader &#x3D; new SAXReader();File file &#x3D; new File(&quot;&#x2F;Users&#x2F;von&#x2F;Downloads&#x2F;untitled.xml&quot;);Document document &#x3D; reader">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610698033402-5a71f15ed90e421d98d580fe89bd8a0e.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610698039500-f6843e28da1c4b1d9c6bd9ed1e8816c4.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610698025463-8e38ef4c3ebf4230b2a5ebadadf84467.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610698593922-078353bee89b4c63a1beee947138c988.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610698598411-b06ec01cd6224f0487ff07727668182d.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610701097027-f0a96997908b42049303c02a158672f7.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610701101422-464c6355e8fa45ab828cad9f66aba513.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610701105999-dee55aea514c47528c1fe46b9e629714.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610701109949-b5c262096e974cd29acaafe34f21a282.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610701114099-c541555fa29445e4be7dda756300eb3b.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610701118330-c49c733bad1142d087125aedd561c7a1.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610702064251-3389cb1b948043478a1b766119a82c17.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610702068545-e511c101a87d40899155e0d3e99be47e.jpg">
+<meta property="og:image" content="https://co.jxyp.cc/upload/2021/01/1610702351468-8610e0dfe28a45248cb38b8e2c60f2aa.jpg">
+<meta property="article:published_time" content="2023-05-05T08:00:19.000Z">
+<meta property="article:modified_time" content="2023-05-05T08:00:37.377Z">
+<meta property="article:author" content="冯银鹏">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://co.jxyp.cc/upload/2021/01/1610698033402-5a71f15ed90e421d98d580fe89bd8a0e.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Von的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Von的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Dom4j-Gradle-使用问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2023-05-05T08:00:19.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Dom4j + Gradle 使用问题
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>在Java11下开发XML文件读取功能，使用Gradle做包的依赖管理，引入Dom4j包以后，读取Xml发生了异常。</p>
+<p><strong>调用方式</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SAXReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SAXReader</span>();</span><br><span class="line"><span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;/Users/von/Downloads/untitled.xml&quot;</span>);</span><br><span class="line"><span class="type">Document</span> <span class="variable">document</span> <span class="operator">=</span> reader.read(file); </span><br><span class="line">System.out.println(document.getRootElement().getName());</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>堆栈报错信息</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line">Warning: Caught exception attempting to use SAX to load a SAX XMLReader </span><br><span class="line">Warning: Exception was: java.lang.ClassCastException: class org.apache.xerces.parsers.SAXParser cannot be cast to class org.xml.sax.XMLReader (org.apache.xerces.parsers.SAXParser is in unnamed module of loader com.intellij.util.lang.UrlClassLoader @59e84876; org.xml.sax.XMLReader is in unnamed module of loader com.intellij.ide.plugins.cl.PluginClassLoader @7136ed80)</span><br><span class="line">Warning: I will print the stack trace then carry on using the default SAX parser</span><br><span class="line">java.lang.ClassCastException: class org.apache.xerces.parsers.SAXParser cannot be cast to class org.xml.sax.XMLReader (org.apache.xerces.parsers.SAXParser is in unnamed module of loader com.intellij.util.lang.UrlClassLoader @59e84876; org.xml.sax.XMLReader is in unnamed module of loader com.intellij.ide.plugins.cl.PluginClassLoader @7136ed80)</span><br><span class="line">	at org.xml.sax.helpers.XMLReaderFactory.loadClass(XMLReaderFactory.java:199)</span><br><span class="line">	at org.xml.sax.helpers.XMLReaderFactory.createXMLReader(XMLReaderFactory.java:150)</span><br><span class="line">	at org.dom4j.io.SAXHelper.createXMLReader(SAXHelper.java:94)</span><br><span class="line">	at org.dom4j.io.SAXReader.createXMLReader(SAXReader.java:896)</span><br><span class="line">	at org.dom4j.io.SAXReader.getXMLReader(SAXReader.java:732)</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:464)</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:325)</span><br><span class="line">	at CztMiddleDevDAction.changePom(CztMiddleDevDAction.java:41)</span><br><span class="line">	at CztMiddleDevDAction.actionPerformed(CztMiddleDevDAction.java:24)</span><br><span class="line">	at com.intellij.openapi.actionSystem.ex.ActionUtil.performActionDumbAware(ActionUtil.java:281)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem$ActionTransmitter.lambda$actionPerformed$0(ActionMenuItem.java:310)</span><br><span class="line">	at com.intellij.openapi.wm.impl.FocusManagerImpl.runOnOwnContext(FocusManagerImpl.java:286)</span><br><span class="line">	at com.intellij.openapi.wm.impl.IdeFocusManagerImpl.runOnOwnContext(IdeFocusManagerImpl.java:77)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem$ActionTransmitter.actionPerformed(ActionMenuItem.java:299)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1967)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem.lambda$fireActionPerformed$0(ActionMenuItem.java:110)</span><br><span class="line">	at com.intellij.openapi.application.TransactionGuardImpl.performUserActivity(TransactionGuardImpl.java:95)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem.fireActionPerformed(ActionMenuItem.java:110)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2308)</span><br><span class="line">	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:405)</span><br><span class="line">	at java.desktop/javax.swing.JToggleButton$ToggleButtonModel.setPressed(JToggleButton.java:401)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton.doClick(AbstractButton.java:369)</span><br><span class="line">	at java.desktop/com.apple.laf.ScreenMenuItemCheckbox.itemStateChanged(ScreenMenuItemCheckbox.java:198)</span><br><span class="line">	at java.desktop/java.awt.CheckboxMenuItem.processItemEvent(CheckboxMenuItem.java:396)</span><br><span class="line">	at java.desktop/java.awt.CheckboxMenuItem.processEvent(CheckboxMenuItem.java:364)</span><br><span class="line">	at java.desktop/java.awt.MenuComponent.dispatchEventImpl(MenuComponent.java:375)</span><br><span class="line">	at java.desktop/java.awt.MenuComponent.dispatchEvent(MenuComponent.java:363)</span><br><span class="line">	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:781)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:727)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)</span><br><span class="line">	at java.base/java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:95)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:751)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:749)</span><br><span class="line">	at java.base/java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)</span><br><span class="line">	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:748)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.defaultDispatchEvent(IdeEventQueue.java:976)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue._dispatchEvent(IdeEventQueue.java:843)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$8(IdeEventQueue.java:454)</span><br><span class="line">	at com.intellij.openapi.progress.impl.CoreProgressManager.computePrioritized(CoreProgressManager.java:773)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$9(IdeEventQueue.java:453)</span><br><span class="line">	at com.intellij.openapi.application.impl.ApplicationImpl.runIntendedWriteActionOnCurrentThread(ApplicationImpl.java:822)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.dispatchEvent(IdeEventQueue.java:507)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)</span><br><span class="line">org.dom4j.DocumentException: SAX2 driver class org.apache.xerces.parsers.SAXParser does not implement XMLReader</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:513)</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:325)</span><br><span class="line">	at CztMiddleDevDAction.changePom(CztMiddleDevDAction.java:41)</span><br><span class="line">	at CztMiddleDevDAction.actionPerformed(CztMiddleDevDAction.java:24)</span><br><span class="line">	at com.intellij.openapi.actionSystem.ex.ActionUtil.performActionDumbAware(ActionUtil.java:281)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem$ActionTransmitter.lambda$actionPerformed$0(ActionMenuItem.java:310)</span><br><span class="line">	at com.intellij.openapi.wm.impl.FocusManagerImpl.runOnOwnContext(FocusManagerImpl.java:286)</span><br><span class="line">	at com.intellij.openapi.wm.impl.IdeFocusManagerImpl.runOnOwnContext(IdeFocusManagerImpl.java:77)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem$ActionTransmitter.actionPerformed(ActionMenuItem.java:299)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1967)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem.lambda$fireActionPerformed$0(ActionMenuItem.java:110)</span><br><span class="line">	at com.intellij.openapi.application.TransactionGuardImpl.performUserActivity(TransactionGuardImpl.java:95)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem.fireActionPerformed(ActionMenuItem.java:110)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2308)</span><br><span class="line">	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:405)</span><br><span class="line">	at java.desktop/javax.swing.JToggleButton$ToggleButtonModel.setPressed(JToggleButton.java:401)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton.doClick(AbstractButton.java:369)</span><br><span class="line">	at java.desktop/com.apple.laf.ScreenMenuItemCheckbox.itemStateChanged(ScreenMenuItemCheckbox.java:198)</span><br><span class="line">	at java.desktop/java.awt.CheckboxMenuItem.processItemEvent(CheckboxMenuItem.java:396)</span><br><span class="line">	at java.desktop/java.awt.CheckboxMenuItem.processEvent(CheckboxMenuItem.java:364)</span><br><span class="line">	at java.desktop/java.awt.MenuComponent.dispatchEventImpl(MenuComponent.java:375)</span><br><span class="line">	at java.desktop/java.awt.MenuComponent.dispatchEvent(MenuComponent.java:363)</span><br><span class="line">	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:781)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:727)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)</span><br><span class="line">	at java.base/java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:95)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:751)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:749)</span><br><span class="line">	at java.base/java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)</span><br><span class="line">	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:748)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.defaultDispatchEvent(IdeEventQueue.java:976)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue._dispatchEvent(IdeEventQueue.java:843)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$8(IdeEventQueue.java:454)</span><br><span class="line">	at com.intellij.openapi.progress.impl.CoreProgressManager.computePrioritized(CoreProgressManager.java:773)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$9(IdeEventQueue.java:453)</span><br><span class="line">	at com.intellij.openapi.application.impl.ApplicationImpl.runIntendedWriteActionOnCurrentThread(ApplicationImpl.java:822)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.dispatchEvent(IdeEventQueue.java:507)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)</span><br><span class="line">Caused by: java.lang.ClassCastException: class org.apache.xerces.parsers.SAXParser cannot be cast to class org.xml.sax.XMLReader (org.apache.xerces.parsers.SAXParser is in unnamed module of loader com.intellij.util.lang.UrlClassLoader @59e84876; org.xml.sax.XMLReader is in unnamed module of loader com.intellij.ide.plugins.cl.PluginClassLoader @7136ed80)</span><br><span class="line">	at org.dom4j.io.SAXHelper.createXMLReader(SAXHelper.java:109)</span><br><span class="line">	at org.dom4j.io.SAXReader.createXMLReader(SAXReader.java:896)</span><br><span class="line">	at org.dom4j.io.SAXReader.getXMLReader(SAXReader.java:732)</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:464)</span><br><span class="line">	... 45 more</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这两天想开发学习一下 Idea的开发插件，主要目的是为了学习，其中有一个需求是读取一下目录中的xml文件，并修改其中的部分节点。</p>
+<p>java操作xml，当然是需要使用成熟的框架了，我选择了使用dom4j框架进行操作。由于Idea插件开发需要使用Gradle进行包的管理，也算是我首次使用吧。结果出的最大问题源头也是Gradle应用.整整花费了2天时间，解决这个问题。</p>
+<p><strong>问题都是共性的，相信肯定有同学走过我这个弯路，或者碰到同款的问题，如果不是同一个项目背景下发生的问题，可以跳过阅读解决思路部分，直接看总结。</strong></p>
+<h2 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h2><p>起初我以为，就这么一个错误嘛!百度一搜肯定有同款问题，实在不行google搜一圈，也能解决。<br>堆栈信息第一行，复制粘贴，百度 没有! 谷歌 没有! idea 社区 没有! dom4j社区 没有! stackoverflow 没有!!!<br>根据多年的开发经验，一旦一个问题在网上搜不到，两种原因：1、搜索关键词有问题。2、使用方式完全有问题。<br>既然搜不到，这种情况下要么反馈到社区（前提你你得找到合适的社区），要么只能跟着堆栈信息看源代码了。</p>
+<p>社区太慢了，还是自己先来吧！<br>先看堆栈信息提炼出来的描述</p>
+<ol>
+<li>org.apache.xerces.parsers.SAXParser 不能转换成 org.xml.sax.XMLReader </li>
+<li>org.apache.xerces.parsers.SAXParser 的classLoader 是  com.intellij.util.lang.UrlClassLoader @59e84876</li>
+<li>org.xml.sax.XMLReader 的classLoader 是 com.intellij.ide.plugins.cl.PluginClassLoader @7136ed80</li>
+</ol>
+<p>跟踪代码看看 这两个类到底是什么关系 为什么不能转换<br><img src="https://co.jxyp.cc/upload/2021/01/1610698033402-5a71f15ed90e421d98d580fe89bd8a0e.jpg" alt="SAXParser的类"><br><img src="https://co.jxyp.cc/upload/2021/01/1610698039500-f6843e28da1c4b1d9c6bd9ed1e8816c4.jpg" alt="继承关系"><br><img src="https://co.jxyp.cc/upload/2021/01/1610698025463-8e38ef4c3ebf4230b2a5ebadadf84467.jpg" alt="XmlReader的类"><br>图片中的继承关系来看，没有任何问题啊 SAXParser 是 XmlReader的实现类啊，不能转换是什么鬼，其实这个时候我一直忽略了后面的 classLoader的提示。解开问题最关键的信息就是classLoader不同的提示,如果早点重视这个提示，中间也不会耗费了那么长的时间走弯路。</p>
+<p>查看了一下 com.intellij.util.lang.UrlClassLoader 是Idea插件开发工具自定义的classLoader<br><img src="https://co.jxyp.cc/upload/2021/01/1610698593922-078353bee89b4c63a1beee947138c988.jpg" alt="UrlClassLoader类"></p>
+<p>com.intellij.ide.plugins.cl.PluginClassLoader 也是Idea插件开发工具自定义的classLoader<br><img src="https://co.jxyp.cc/upload/2021/01/1610698598411-b06ec01cd6224f0487ff07727668182d.jpg" alt="XMLReader类"></p>
+<p>仔细研究了一下，idea插件开发包，自定义了两种类加载器。从作用上来讲 UrlClassLoader 是用来加载Idea插件开发的所有基础jar包，基础jar包里面包含了大量的常用工具包。PluginClassLoader 是用来加载用户自定义java类的加载器。<br>而且他们是继承关系 PluginClassLoader 完全继承了 UrlClassLoader。<br>那回到错误上说 把一个父类加载器生成的对象 SAXParser 转换成子加载器生成的对象 XMLReader 是不行的。 虽然SAXParser 是 XMLReader 的子类但是加载器确是相反的<br>什么问题能造成这种奇特的现象出现？？？</p>
+<p><strong>等等，还有一个问题</strong> org.xml.sax.XMLReader 这个类可是Java11自带的类。是放在rt.jar里面的，这个是祖先 BootstrapClassLoader加载的， 你一个小小的PluginClassLoader子类加载器，能加载他？双亲委派模式呢？乱加载jdk对象那还得了！！！ 除非~~ 我在代码里重新定义了或者引用了org.xml.sax.XMLReader。</p>
+<p>带着疑问，我们来看看 dom4j 从调用read()方法代码的入口，到底干了哪些事情，毕竟错误是从这个方法里面抛出来的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SAXReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SAXReader</span>();</span><br><span class="line"><span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;/Users/von/Downloads/untitled.xml&quot;</span>);</span><br><span class="line"><span class="type">Document</span> <span class="variable">document</span> <span class="operator">=</span> reader.read(file); </span><br><span class="line">System.out.println(document.getRootElement().getName());</span><br></pre></td></tr></table></figure>
+
+<p>1.代码调用顺序<br><img src="https://co.jxyp.cc/upload/2021/01/1610701097027-f0a96997908b42049303c02a158672f7.jpg" alt="1610701097027.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701101422-464c6355e8fa45ab828cad9f66aba513.jpg" alt="1610701101422.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701105999-dee55aea514c47528c1fe46b9e629714.jpg" alt="1610701105999.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701109949-b5c262096e974cd29acaafe34f21a282.jpg" alt="1610701109949.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701114099-c541555fa29445e4be7dda756300eb3b.jpg" alt="1610701114099.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701118330-c49c733bad1142d087125aedd561c7a1.jpg" alt="1610701118330.jpg"></p>
+<p>调试的时候发现在最后一张图 SAXParserFactory.newInstance()，其实已经报错了，他给出的错误信息更加的准确，而抛出到控制台的异常反而是后续的补偿功能失效的异常。<br>这步的堆栈信息 拿出来是这样的</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class org.apache.xerces.jaxp.SAXParserFactoryImpl cannot be cast to class javax.xml.parsers.SAXParserFactory (</span><br><span class="line">org.apache.xerces.jaxp.SAXParserFactoryImpl is in unnamed module of loader com.intellij.util.lang.UrlClassLoader @59e84876; </span><br><span class="line">javax.xml.parsers.SAXParserFactory is in unnamed module of loader com.intellij.ide.plugins.cl.PluginClassLoader @6dc97916)            	</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>错误信息与原始堆栈给出的错误，都是出自同一套模板，只是把两个类分别换成了 SAXParserFactoryImpl 与 SAXParserFactory 不能转换。</p>
+<p>SAXParserFactory 同样是jdk自带的 rt.jar包里面的类，本应该属于BootstrapClassLoader加载的对象，又被 PluginClassLoader这个加载器给加载了，不用想了，肯定是我们自己引用的包里面包含了 SAXParserFactory 的类，因为之后我们自己写的java文件和引用的jar包，才会被PluginClassLoader加载。</p>
+<p>最后真的被找到了，果不其然</p>
+<p><img src="https://co.jxyp.cc/upload/2021/01/1610702064251-3389cb1b948043478a1b766119a82c17.jpg" alt="1610702064251.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610702068545-e511c101a87d40899155e0d3e99be47e.jpg" alt="1610702068545.jpg"></p>
+<p>这个jar包居然 Gradel引用某一个java包的时候居然会把他所有的依赖都加载过来，其中的一个jar包pull-parser.jar 居然全包抄了一遍jdk的代码。。。。。。。。。实在想象不到他的用途在哪里。</p>
+<p>Gradel 里面果断排除了这个包<br><img src="https://co.jxyp.cc/upload/2021/01/1610702351468-8610e0dfe28a45248cb38b8e2c60f2aa.jpg" alt="1610702351468.jpg"></p>
+<p>一切都正常了！！！！！！ 泪崩。。。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>这种问题的产生是由jar包冲突引起的，只是抛出的错误有误导性。需要对无法转换的类进行跟踪，查看到底是哪里冲突了。</li>
+<li>要看懂解决思路部分，必须要对 JVM 的基础知识 ClassLoader部分有深入的了解。</li>
+<li>源代码的阅读一定要仔细，碰到不明白的问题，必须停下来补充相关知识。否则越看越无厘头。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/" data-id="clha9qkby00007u9k48z9hfrw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          一致哈希算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">字符串相似度比较（编辑距离算法）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/05/JAVA8-%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%8E%BB%E9%87%8D%E5%86%99%E6%B3%95/">JAVA8 列表对象去重写法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/">用python写了两个爬虫</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">一致哈希算法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/">Dom4j + Gradle 使用问题</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/">字符串相似度比较（编辑距离算法）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 冯银鹏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

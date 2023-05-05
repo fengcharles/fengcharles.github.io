@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>字符串相似度比较（编辑距离算法） | Von的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="关于前段时间开发一个功能，关于两个字符串相似度比较的需求，在网上翻了翻，大多都推荐编辑距离算法来实现这个功能。起初，我在想，我两个字符串比较，跟编辑距离有啥关系？为啥编辑距离能解决相似度比较的问题？ 下面解答一下这个问题如果我们需要比较两个字符串的相似度，简单一点的例子 一个字符比如a与a很容易得出相似度100%，两个字符串比较也很容易 ab与ac相似度50%。bac与adf相似度33%，这种相似">
+<meta property="og:type" content="article">
+<meta property="og:title" content="字符串相似度比较（编辑距离算法）">
+<meta property="og:url" content="http://example.com/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/index.html">
+<meta property="og:site_name" content="Von的个人博客">
+<meta property="og:description" content="关于前段时间开发一个功能，关于两个字符串相似度比较的需求，在网上翻了翻，大多都推荐编辑距离算法来实现这个功能。起初，我在想，我两个字符串比较，跟编辑距离有啥关系？为啥编辑距离能解决相似度比较的问题？ 下面解答一下这个问题如果我们需要比较两个字符串的相似度，简单一点的例子 一个字符比如a与a很容易得出相似度100%，两个字符串比较也很容易 ab与ac相似度50%。bac与adf相似度33%，这种相似">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-05-05T07:59:15.000Z">
+<meta property="article:modified_time" content="2023-05-05T07:59:43.064Z">
+<meta property="article:author" content="冯银鹏">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Von的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Von的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-字符串相似度比较（编辑距离算法）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/" class="article-date">
+  <time datetime="2023-05-05T07:59:15.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      字符串相似度比较（编辑距离算法）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h1><p>前段时间开发一个功能，关于<strong>两个字符串相似度比较</strong>的需求，在网上翻了翻，大多都推荐<strong>编辑距离算法</strong>来实现这个功能。起初，我在想，我两个字符串比较，跟编辑距离有啥关系？为啥编辑距离能解决相似度比较的问题？</p>
+<p>下面解答一下这个问题<br>如果我们需要比较两个字符串的相似度，<br>简单一点的例子 一个字符比如a与a很容易得出相似度100%，两个字符串比较也很容易 ab与ac相似度50%。bac与adf相似度33%，这种相似度，我们靠人脑和生活经验很轻松就能实现，但是如果是10个字母呢？字母之间又有很多排列组合，怎么计算他们的相似度？所以我们一定需要某种规则，某种算法，这个算法一定是要经过严格的数学证明，可行的，能得出两个字符串之间最大的差异值，通过这个值来计算相似度。那么这个算法有没有呢？ 答案是有，肯定有很多种算法。看这里<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/91645988">计算字符串相似度</a></p>
+<p>本文主要讲解编辑距离算法。<br>由于网上很多资源都是很凌乱，对于不搞算法的人来说理解起来特别困难，找了很多个博文，东拼西凑，才把完整的理论弄懂，最后自己再总结一下，便于理解。</p>
+<h2 id="算法细节"><a href="#算法细节" class="headerlink" title="算法细节"></a>算法细节</h2><p>那么我们看下编辑距离算法的原理<br>指两个字串之间，由一个转成另一个所需的最少编辑操作次数，如果它们的距离越大，说明它们越是不同。许可的编辑操作包括将一个字符替换成另一个字符，插入一个字符，删除一个字符。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chichoxian/article/details/53944188">算法技术细节</a></p>
+<p>对于我们普通开发人员来说，直接套用算法公式就行了，按照算法写代码了。</p>
+<p>根据这个算法我们已经可以获得两个字符串最短的编辑距离了，那么相似度计算还需要加上最后一个公式<br> <strong>1 - ( 编辑距离 / 两个字符串的最大长度）</strong><br>这样可以得到符合我们语义的相似度。</p>
+<h3 id="质疑算法"><a href="#质疑算法" class="headerlink" title="质疑算法"></a>质疑算法</h3><p>如果质疑算法的正确性，可以看这里 <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/425049057/answer/1583825407">编辑距离算法证明</a></p>
+<h1 id="算法出处"><a href="#算法出处" class="headerlink" title="算法出处"></a>算法出处</h1><h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><p>20世纪50年代初，美国数学家贝尔曼（R.Bellman）等人在研究多阶段决策过程的优化问题时，提出了著名的最优化原理，从而创立了动态规划。</p>
+<h2 id="编辑距离"><a href="#编辑距离" class="headerlink" title="编辑距离"></a>编辑距离</h2><p>俄罗斯科学家Vladimir Levenshtein在1965年提出这个概念,该算法主要基于<strong>动态规划</strong>的思想实现的。</p>
+<h1 id="算法实现（java）"><a href="#算法实现（java）" class="headerlink" title="算法实现（java）"></a>算法实现（java）</h1><p>核心算法部分通过了LeetCode测试，完全可以使用到生产环境，遗憾的是时间复杂度比较高O(n²)，由于没有刷极限低时间复杂度算法的心思。<br>如果有兴趣，可以网上找一找。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line">public class EditDistance &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 算法的主要实现</span><br><span class="line">     * @param orign</span><br><span class="line">     * @param target</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private  static  int dp(String orign,String target)&#123;</span><br><span class="line"></span><br><span class="line">        //构造数组</span><br><span class="line">        int [][] table = new int[orign.length() + 1][target.length() + 1];</span><br><span class="line">        char [] oa = orign.toCharArray();</span><br><span class="line">        char [] ta = target.toCharArray();</span><br><span class="line"></span><br><span class="line">        if (oa.length == 0 &amp;&amp; ta.length == 0)&#123;</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (oa.length == 0)&#123;</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (ta.length == 0)&#123;</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; oa.length+1; i++) &#123;</span><br><span class="line">            for (int j = 0; j &lt; ta.length+1; j++) &#123;</span><br><span class="line"></span><br><span class="line">                //初始化数组</span><br><span class="line">                if (i == 0)&#123;</span><br><span class="line">                    table[i][j] = j;</span><br><span class="line">                    continue;</span><br><span class="line">                &#125;</span><br><span class="line">                if (j == 0)&#123;</span><br><span class="line">                    table[i][j] = i;</span><br><span class="line">                    continue;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                //实现算法</span><br><span class="line">                int x = i - 1;</span><br><span class="line">                int y = j - 1;</span><br><span class="line"></span><br><span class="line">                //计算增加，删除，编辑，的最短距离</span><br><span class="line">                int add = table[i-1][j] + 1;</span><br><span class="line">                int del = table[i][j-1] + 1;</span><br><span class="line">                int cha = table[i-1][j-1] + (oa[x] == ta[y] ? 0 : 1);</span><br><span class="line"></span><br><span class="line">                int min = Math.min(Math.min(add, del), cha);</span><br><span class="line">                table[i][j] = min;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;编辑矩阵为：&quot;);</span><br><span class="line">        printArrays(table);</span><br><span class="line"></span><br><span class="line">        int redata = table[orign.length()][target.length()];</span><br><span class="line">        System.out.println(&quot;编辑距离最小是：&quot; + redata);</span><br><span class="line">        return redata;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 打印二维数组细节</span><br><span class="line">     * @param table</span><br><span class="line">     */</span><br><span class="line">    private static void printArrays(int [][] table)&#123;</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; table.length; i++) &#123;</span><br><span class="line">            StringBuilder sb = new StringBuilder();</span><br><span class="line">            for (int j = 0; j &lt; table[0].length; j++) &#123;</span><br><span class="line">                sb.append(table[i][j]);</span><br><span class="line">                sb.append(&quot;,&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(sb.toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 相似度计算</span><br><span class="line">     * @param dp</span><br><span class="line">     * @param word1</span><br><span class="line">     * @param word2</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private static float similar(int dp,String word1,String word2)&#123;</span><br><span class="line"></span><br><span class="line">        float result = 1;</span><br><span class="line">        int maxLength = Math.max(word1.length(), word2.length());</span><br><span class="line">        if (maxLength!=0)&#123;</span><br><span class="line">            result = 1 - ((float)dp / maxLength);</span><br><span class="line">        &#125;</span><br><span class="line">        return  result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String word1 = &quot;11231&quot;;</span><br><span class="line">        String word2 = &quot;11&quot;;</span><br><span class="line">        int dp = dp(word1, word2);</span><br><span class="line"></span><br><span class="line">        float resualt = similar(dp, word1, word2);</span><br><span class="line">        System.out.println(&quot;两个字符串之间的相似度为:&quot; + resualt);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/" data-id="clha9qkc700067u9khc9ua0ro" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Dom4j + Gradle 使用问题
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/05/05/%E5%90%84%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%8A%80%E6%9C%AF%E7%9A%84%E7%90%86%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">各种分布式事务技术的理解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/05/JAVA8-%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%8E%BB%E9%87%8D%E5%86%99%E6%B3%95/">JAVA8 列表对象去重写法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/">用python写了两个爬虫</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">一致哈希算法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/">Dom4j + Gradle 使用问题</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/">字符串相似度比较（编辑距离算法）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 冯银鹏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

@@ -64,6 +64,503 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-JAVA8-列表对象去重写法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/JAVA8-%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%8E%BB%E9%87%8D%E5%86%99%E6%B3%95/" class="article-date">
+  <time datetime="2023-05-05T08:02:00.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/05/05/JAVA8-%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%8E%BB%E9%87%8D%E5%86%99%E6%B3%95/">JAVA8 列表对象去重写法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">goodInfos = goodInfos.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(</span><br><span class="line">                () -&gt; new TreeSet&lt;&gt;(</span><br><span class="line">                        Comparator.comparing(</span><br><span class="line">                            f -&gt; &#123;</span><br><span class="line">                                String sp[] = f.getGoodsSign().split(&quot;_&quot;);</span><br><span class="line">                                return sp[sp.length - 1];</span><br><span class="line">                            &#125;</span><br><span class="line">                    ))</span><br><span class="line">), ArrayList::new));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/JAVA8-%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%8E%BB%E9%87%8D%E5%86%99%E6%B3%95/" data-id="clha9qkc600047u9kepzfbx99" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-用python写了两个爬虫" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/" class="article-date">
+  <time datetime="2023-05-05T08:01:24.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/">用python写了两个爬虫</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近半年内，有两件事比较关心，一件是新买的房子销售情况咋样，另一件是新买的房子旁边的路啥时候修。</p>
+<p>好的一点是，这两件事情，都可以通过网站查询，就是登陆输入验证码比较繁琐。<br>而且我又想每天都知道进展。</p>
+<p>作为一名工程师，工程师思维必须是优先具备的，这种繁琐重复的事情为什么不交给程序去解决。正好前段时间我的几台服务器docker环境和网络环境都搭建好了，写两个爬虫充实一下。</p>
+<h4 id="为什么使用Python去写？"><a href="#为什么使用Python去写？" class="headerlink" title="为什么使用Python去写？"></a>为什么使用Python去写？</h4><p>Java写东西已经很熟悉了，写起来没啥挑战，也没啥成长。Python我作为一门辅修的脚本语言，写起来要比java快很多，也可以通过写爬虫多学习学习。</p>
+<h4 id="下面介绍一下商品房销售情况的爬虫实现原理"><a href="#下面介绍一下商品房销售情况的爬虫实现原理" class="headerlink" title="下面介绍一下商品房销售情况的爬虫实现原理"></a>下面介绍一下<strong>商品房销售情况</strong>的爬虫实现原理</h4><p>不得不吹一下上海的IT系统建设还是很全面的，目前上海市所有区域，楼盘销售情况，都可以通过 <a target="_blank" rel="noopener" href="http://www.fangdi.com.cn/index.html">网上房地产</a> 进行查询。</p>
+<p>这个爬虫写起来稍微有点费劲，因为本身网站是反爬的，为了不让客户端，获取到访问的接口来直接调用。每次客户端获取页面都会通过JS加密生成一段新的Token,这个Token会作为参数和其他参数一起提交来调用服务端接口。</p>
+<p>解密是不可能了，费时费力还不一定有结果。只能通过页面渲染完成以后在Html页面抓取想要的结果了，但是这个网站html渲染之前，要经过大量的后端Ajax访问，最后生成页面。不能通过简简单单直接拉页面过来。</p>
+<p>研究了很久，所以最后使用的技术是 <strong>Selenium</strong> 。简单来说这个是Python的的第三方模块，这个模块可以完全模拟浏览器来访问页面，支持 Chrome,Firefox,Safari 的主流浏览器。这个技术发明本身是用来做自动化测试的。谁知道阴差阳错的被人用来做爬虫反而更加实用。</p>
+<p>代码寥寥数百行，功能就实现了。写起来确实比java方便的多，这个脚本每隔半个小时访问一次该网站，如果销售数量发生变化以后，会给我发送微信消息。同时学习了以下几个技术：</p>
+<p><strong>Python</strong>：类的创建以及使用，变量作用域，主线程睡眠，循环的使用，异常处理，虚拟环境搭建以及使用。</p>
+<p><strong>Docker</strong>： Dockerfile文件的创建使用，Docker基础镜像文件生成规则。镜像上传到Docker Hub库，远程获取，全套部署流程。</p>
+<h4 id="家门口的路何时修建爬虫实现原理"><a href="#家门口的路何时修建爬虫实现原理" class="headerlink" title="家门口的路何时修建爬虫实现原理"></a>家门口的路何时修建爬虫实现原理</h4><p>家门口的路何时修建的问题，本身是没有网站公布的，这个属于政府管理，上海各个区域各个镇都有自己的网站政务公开项目，比如浦东新区的政务公开会在这个网站<a target="_blank" rel="noopener" href="http://www.pudong.gov.cn/shpd/InfoOpen/DeptList.aspx?DeptId=005025">浦东政务</a>进行发布，经过我的研究观察，一条路从规划，到修建中间有漫漫长的步骤。规划，动迁，招标，土地属性变更申请，正式动工，通车。这些步骤都会通过PDF文件的形式进行公布。从这里获取数据太难了。</p>
+<p>机智的我有一次在逛本地论坛的时候看见 <a target="_blank" rel="noopener" href="https://qxf.sh.gov.cn/310115">上海网上信访中心</a> 如获至宝，这个网站你可以以公开信的方式，讯问政府土地建设规划问题。那我家门口的路不就可以问吗？</p>
+<p>实名写信提交以后，过了两周回复我说，已经开始受理了，预计<strong>60个</strong>工作日给答复。看到这个时间。。。。无语了。还没有主动通知，必须每天登陆输入验证码，各种跳转后，才能看到处理状态和结果。</p>
+<p>那好吧，既然这样繁琐，爬虫搞起来。原理很简单，搞个自动登录，半个小时获取一次页面信息，如果是处理成功，就微信消息通知我。</p>
+<p>研究了一些这个网站，url后缀居然是.do结尾的 上次看到这个标识，大概是10多年前学java的时候了。可想而知得多老的一个系统哇。 反爬虫肯定是没有了，能有人维护这个古董网站已经不容易了。</p>
+<p>搞起来很轻松，Python的requests模块 什么都搞定了。</p>
+<p>开发难点就是验证码识别登录问题，如果是简单的点的验证码，可以通过对图像进行灰度，二值，降噪三连加上使用pytesseract文字识别，就很容易解决了。</p>
+<p>遗憾的是这个验证码还是有点难度的，但是在AI，机器学习横行的年代，这古董网站的验证码很容易通过CNN（卷积神经网络） 机器学习训练识别。各种方式找了好久刚开始走了弯路，想通过tesseract-ocr 4.0 自己手动标记，训练字库的方式，后来发现文档实在是太少，自己研究以后，发现自己是进入了另一个学科领域。后来放弃了。</p>
+<p>本来想着手动搞搞验证码算了，这个领域实在太难了，可是无意中又找到一个神器 muggle-ocr，他是基于captcha_trainer，训练出来的验证码识别包， 可以对市面上大多数的验证码进行识别，而且准确率异常的高。入手非常简单，3行代码就可以搞定。</p>
+<p>缺点是引用的包太多，打docker包，光是引进一个muggle-ocr相关的依赖引用，就1.2个G。为了配合引用机器学习的相关操作系统包，又多了500M。</p>
+<p>总之是脚本是完整运转起来了。整体流程就是，生成会话，获取登录页面，获取验证码，验证码图片保存到本地，机器识别以后，模拟登陆，然后跳转到处理页面，拉取状态。成功通知我，不成功继续刷新获取。</p>
+<h4 id="写Python过程中的几点感悟"><a href="#写Python过程中的几点感悟" class="headerlink" title="写Python过程中的几点感悟"></a>写Python过程中的几点感悟</h4><p>这两个功能业余时间写的，陆陆续续写了一个月，中间隔了个春节假期。</p>
+<p>写爬虫时间都花费在了 如何使用python，环境搭建，语法和类库规则面。真正的代码逻辑非常简单。发现切换语言开发起来，思路非常清晰，想实现什么功能，找文档查查就行了。无非就是换了一种写法而已。</p>
+<p>思维和正确的方法才是最主要的，思维这个东西是常年开发训练出来的，相当于武学中，修炼好了内功，招式用什么刀，什么剑都是次要的。</p>
+<p>另外吐槽一下网上热火朝天打广告的学习Python,我发现广告页面居然要比技术文档页面要多的多。。。 而且即使搜到文档，质量都奇差无比，跟java的文档质量都不在一个档次上面。而且Python2和Python3居然是两种语言，搞环境就折腾了好久。</p>
+<p>但是 Python写这种东西就是简单。有一说一。没有类型检查，不用定义返回值。跟个玩具一样。</p>
+<p>以后决定写小东西就用Python了。轻巧灵活。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/" data-id="clha9qkc800087u9kfpx3090x" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-一致哈希算法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" class="article-date">
+  <time datetime="2023-05-05T08:00:50.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">一致哈希算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转载 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/Ti2AA5AKXzt6Fnqn2pXiwg">一致性hash算法</a></p>
+<p>面试中一致性哈希算法被问到的概率非常大，本文将从如下三个方面探探一致性哈希算法，让大家轻松应对面试，并且说出与众不同的答案。</p>
+<p>一致性哈希算法经典实用场景</p>
+<p>一致性哈希算法通常不适合用于服务类负载均衡</p>
+<p>面试应对之策</p>
+<p>1、一致性哈希算法经典使用场景<br>在数据库存储领域如果单表数据量很大，通常会采用分库分表，在缓存领域同样需要分库，下面以一个非常常见的Redis分库架构为例进行阐述。</p>
+<p>图片<br>将上述3个Redis节点称之为分片，每一个节点存储部分数据，需要使用负载均衡算法，将数据尽量分摊到各个节点，充分发挥分布式的优势，提升系统缓存访问的性能。<br>在分布缓存领域，对数据存在新增与查询，即数据通过路由算法存储在某一个节点后，查询时需要尽量路由到同一个节点，否则会出现查询未命中缓存的情况，这也是与分布式服务调用领域的负载算法一个不同点。</p>
+<p>分布式缓存存储类领域的负载均衡算法通常会使用某一个字段当分片键，在进行负载之前先求出分片字段对应的HashCode，然后与当前的节点数取模。即 hashcode(分片键) % 节点总数(分片总数)。</p>
+<p>1.1 在分布式缓存领域上述算法的弊端<br>先哈希再取模实现起来简单高效，但在分布式缓存领域存在一个致命的痛点，对扩容、缩容不友好，会降低缓存的命中率。</p>
+<p>因扩容引起的数据命中率问题示意图如下：</p>
+<p>图片</p>
+<p>例如当前集群中由3个节点存储，例如现在向集群中写入6个数据，其分片键的hashcode为1-6，数据的分布情况如上述所示，但由于随着业务的急剧增长，3台redis已经无法满足业务的需求，项目组决定对其进行扩容，从原先的3台扩容到4台，这个时候项目组尝试去缓存中查找 k1,k2,k3,k4,k5,k6时会出现什么问题？<br>根据 hashcode 再取模的方式，由于数量从3台到4台，经路由算法路由后，k4 会尝试从3.169的机器去查找，但对应的数据却存储在3.166上，以上面6个key的命中来看，只有50%的命中率，扩容后带来缓存穿透，大量数据进入穿透到后台数据库。</p>
+<p>面对上述问题第一种解决方案：成倍扩容。将原来的3个节点数量翻倍倍，新增加的第一台数据来源于第一台，以此类推，第6台的数据来源于第3台，这样k6经过新的负载均衡算法会落到第6台，数据原本存在于第3台，而第6台的数据来源于第3台，这样避免了缓存穿透。</p>
+<p>成倍扩容能有效解决扩容后带来的缓存穿透问题，但这样做会造成资源的浪费，有没有其他更好的方法呢？</p>
+<p>一致性哈希算法闪亮登场。</p>
+<p>1.2 一致性哈希算法<br>一致性哈希算法的设计理念如下图所示：</p>
+<p>图片<br>首先将哈希值映射到 0 ~ 2的32次方的一个圆中，然后将实际的物理节点的IP地址或取其可以表示一个节点的hash值，放入到hash环中。<br>然后对需要插入的数据先求哈希，再顺时针沿着哈希环，找到第一个实际节点，数据将存储到该实际节点上。</p>
+<p>扩容后的示例图：</p>
+<p>图片</p>
+<p>从中可以看到受影响的范围能控制在两个节点的hashcode之间的部分数据，比起先哈希再取模，其未命中率将会得到极大的影响。<br>但一致性哈希算法要得到较好的效果，取决于各个实体节点在哈希环的分布情况，是否能分散，例如如下分布则会大打折扣：</p>
+<p>图片</p>
+<p>这种情况会造成数据分布不均衡，为了解决数据很可能分布不均匀的情况，对一致性哈希算法，提出了改进，引入了虚拟节点的，可以设置一个哈希环中存在多少个虚拟节点，然后将虚拟节点映射到实体节点，从而解决数据分布不均衡的问题。<br>图片</p>
+<p>这样通过为不同的的实际节点映射到多个虚拟节点，实现数据的均匀分布，并且扩容或缩容时并不会出现大面积的缓存穿透。<br>温馨提示：上述的映射只是一个理想状态，其核心思路是为每一个实体节点创建多个虚拟节点，并且核心虚拟节点的Hash值越分散越好。</p>
+<p>大家可以思考一下，如何用JAVA来实现一致性哈希算法？</p>
+<p>一致性哈希算法的两个关键：</p>
+<p>顺时针选择节点<br>可以使用TreeMap，一来具备排序功能，天然提供了相应的方法获取顺时针的一个元素。<br>TreeMap 的 ceilingEntry()方法用于返回与大于或等于给定键元素(ele)的最小键元素链接的键值对。</p>
+<p>虚拟节点如何生成分散的哈希值<br>生成分散的哈希值，通常可以基于md5来实现。</p>
+<p>图片</p>
+<p>2、一致性哈希算法被“滥用”<br>一致性哈希算法在面对分布式缓存有着得天独厚的优势，因为它的产生就是为了解决分布式缓存扩容、缩容带来的缓存穿透问题。但现在一致性在分布式服务调用的负载算法竟然也提供了一致性哈希算法的实现。</p>
+<p>在Dubbo中为了实现客户端在服务调用时对服务提供者进行负载均衡，官方也提供了一致性哈希算法；在RocketMQ集群消费模式时消费队列的负载均衡机制竟然也实现了一致性哈希算法，但我觉得一致性哈希算法在这些领域完全无法发挥其他优势，比轮循、加权轮循、随机、加权随机算法等负载均衡算法相比，实现复杂，性能低下，运维管理复杂。</p>
+<p>因为在服务调用等负载均衡算法，多次服务调用之间关联性不太强，在服务端扩容、缩容后，对于客户端来说其实并不关心路由到哪台服务器，其关心的是能否返回一台服务器即可。</p>
+<p>3、面试应对之策<br>在面试过程中，遇到一致性哈希算的时候，尽量能从其使用场景：分布式缓存负载均衡，特别是突出扩容、缩容能有效避免缓存穿透的问题。同时需要阐述一致性哈希算法的缺陷以及其应对策略(虚拟节点)。</p>
+<p>聊的差不多可以顺便提一下阅读过一致性哈希算法的源码：强调TreeMap与虚拟节点哈希值的生成方法。</p>
+<p>最后可以尝试引导面试官聊聊现在一致性哈希算法有点被滥用的嫌疑，在轻松愉快的讨论中与面试交流技术，面试官好评度蹭蹭往上涨。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" data-id="clha9qkc500037u9k8a2d3v2n" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Dom4j-Gradle-使用问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2023-05-05T08:00:19.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/">Dom4j + Gradle 使用问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>在Java11下开发XML文件读取功能，使用Gradle做包的依赖管理，引入Dom4j包以后，读取Xml发生了异常。</p>
+<p><strong>调用方式</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SAXReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SAXReader</span>();</span><br><span class="line"><span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;/Users/von/Downloads/untitled.xml&quot;</span>);</span><br><span class="line"><span class="type">Document</span> <span class="variable">document</span> <span class="operator">=</span> reader.read(file); </span><br><span class="line">System.out.println(document.getRootElement().getName());</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>堆栈报错信息</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line">Warning: Caught exception attempting to use SAX to load a SAX XMLReader </span><br><span class="line">Warning: Exception was: java.lang.ClassCastException: class org.apache.xerces.parsers.SAXParser cannot be cast to class org.xml.sax.XMLReader (org.apache.xerces.parsers.SAXParser is in unnamed module of loader com.intellij.util.lang.UrlClassLoader @59e84876; org.xml.sax.XMLReader is in unnamed module of loader com.intellij.ide.plugins.cl.PluginClassLoader @7136ed80)</span><br><span class="line">Warning: I will print the stack trace then carry on using the default SAX parser</span><br><span class="line">java.lang.ClassCastException: class org.apache.xerces.parsers.SAXParser cannot be cast to class org.xml.sax.XMLReader (org.apache.xerces.parsers.SAXParser is in unnamed module of loader com.intellij.util.lang.UrlClassLoader @59e84876; org.xml.sax.XMLReader is in unnamed module of loader com.intellij.ide.plugins.cl.PluginClassLoader @7136ed80)</span><br><span class="line">	at org.xml.sax.helpers.XMLReaderFactory.loadClass(XMLReaderFactory.java:199)</span><br><span class="line">	at org.xml.sax.helpers.XMLReaderFactory.createXMLReader(XMLReaderFactory.java:150)</span><br><span class="line">	at org.dom4j.io.SAXHelper.createXMLReader(SAXHelper.java:94)</span><br><span class="line">	at org.dom4j.io.SAXReader.createXMLReader(SAXReader.java:896)</span><br><span class="line">	at org.dom4j.io.SAXReader.getXMLReader(SAXReader.java:732)</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:464)</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:325)</span><br><span class="line">	at CztMiddleDevDAction.changePom(CztMiddleDevDAction.java:41)</span><br><span class="line">	at CztMiddleDevDAction.actionPerformed(CztMiddleDevDAction.java:24)</span><br><span class="line">	at com.intellij.openapi.actionSystem.ex.ActionUtil.performActionDumbAware(ActionUtil.java:281)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem$ActionTransmitter.lambda$actionPerformed$0(ActionMenuItem.java:310)</span><br><span class="line">	at com.intellij.openapi.wm.impl.FocusManagerImpl.runOnOwnContext(FocusManagerImpl.java:286)</span><br><span class="line">	at com.intellij.openapi.wm.impl.IdeFocusManagerImpl.runOnOwnContext(IdeFocusManagerImpl.java:77)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem$ActionTransmitter.actionPerformed(ActionMenuItem.java:299)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1967)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem.lambda$fireActionPerformed$0(ActionMenuItem.java:110)</span><br><span class="line">	at com.intellij.openapi.application.TransactionGuardImpl.performUserActivity(TransactionGuardImpl.java:95)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem.fireActionPerformed(ActionMenuItem.java:110)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2308)</span><br><span class="line">	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:405)</span><br><span class="line">	at java.desktop/javax.swing.JToggleButton$ToggleButtonModel.setPressed(JToggleButton.java:401)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton.doClick(AbstractButton.java:369)</span><br><span class="line">	at java.desktop/com.apple.laf.ScreenMenuItemCheckbox.itemStateChanged(ScreenMenuItemCheckbox.java:198)</span><br><span class="line">	at java.desktop/java.awt.CheckboxMenuItem.processItemEvent(CheckboxMenuItem.java:396)</span><br><span class="line">	at java.desktop/java.awt.CheckboxMenuItem.processEvent(CheckboxMenuItem.java:364)</span><br><span class="line">	at java.desktop/java.awt.MenuComponent.dispatchEventImpl(MenuComponent.java:375)</span><br><span class="line">	at java.desktop/java.awt.MenuComponent.dispatchEvent(MenuComponent.java:363)</span><br><span class="line">	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:781)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:727)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)</span><br><span class="line">	at java.base/java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:95)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:751)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:749)</span><br><span class="line">	at java.base/java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)</span><br><span class="line">	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:748)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.defaultDispatchEvent(IdeEventQueue.java:976)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue._dispatchEvent(IdeEventQueue.java:843)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$8(IdeEventQueue.java:454)</span><br><span class="line">	at com.intellij.openapi.progress.impl.CoreProgressManager.computePrioritized(CoreProgressManager.java:773)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$9(IdeEventQueue.java:453)</span><br><span class="line">	at com.intellij.openapi.application.impl.ApplicationImpl.runIntendedWriteActionOnCurrentThread(ApplicationImpl.java:822)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.dispatchEvent(IdeEventQueue.java:507)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)</span><br><span class="line">org.dom4j.DocumentException: SAX2 driver class org.apache.xerces.parsers.SAXParser does not implement XMLReader</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:513)</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:325)</span><br><span class="line">	at CztMiddleDevDAction.changePom(CztMiddleDevDAction.java:41)</span><br><span class="line">	at CztMiddleDevDAction.actionPerformed(CztMiddleDevDAction.java:24)</span><br><span class="line">	at com.intellij.openapi.actionSystem.ex.ActionUtil.performActionDumbAware(ActionUtil.java:281)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem$ActionTransmitter.lambda$actionPerformed$0(ActionMenuItem.java:310)</span><br><span class="line">	at com.intellij.openapi.wm.impl.FocusManagerImpl.runOnOwnContext(FocusManagerImpl.java:286)</span><br><span class="line">	at com.intellij.openapi.wm.impl.IdeFocusManagerImpl.runOnOwnContext(IdeFocusManagerImpl.java:77)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem$ActionTransmitter.actionPerformed(ActionMenuItem.java:299)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1967)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem.lambda$fireActionPerformed$0(ActionMenuItem.java:110)</span><br><span class="line">	at com.intellij.openapi.application.TransactionGuardImpl.performUserActivity(TransactionGuardImpl.java:95)</span><br><span class="line">	at com.intellij.openapi.actionSystem.impl.ActionMenuItem.fireActionPerformed(ActionMenuItem.java:110)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2308)</span><br><span class="line">	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:405)</span><br><span class="line">	at java.desktop/javax.swing.JToggleButton$ToggleButtonModel.setPressed(JToggleButton.java:401)</span><br><span class="line">	at java.desktop/javax.swing.AbstractButton.doClick(AbstractButton.java:369)</span><br><span class="line">	at java.desktop/com.apple.laf.ScreenMenuItemCheckbox.itemStateChanged(ScreenMenuItemCheckbox.java:198)</span><br><span class="line">	at java.desktop/java.awt.CheckboxMenuItem.processItemEvent(CheckboxMenuItem.java:396)</span><br><span class="line">	at java.desktop/java.awt.CheckboxMenuItem.processEvent(CheckboxMenuItem.java:364)</span><br><span class="line">	at java.desktop/java.awt.MenuComponent.dispatchEventImpl(MenuComponent.java:375)</span><br><span class="line">	at java.desktop/java.awt.MenuComponent.dispatchEvent(MenuComponent.java:363)</span><br><span class="line">	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:781)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:727)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)</span><br><span class="line">	at java.base/java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:95)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:751)</span><br><span class="line">	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:749)</span><br><span class="line">	at java.base/java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)</span><br><span class="line">	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:748)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.defaultDispatchEvent(IdeEventQueue.java:976)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue._dispatchEvent(IdeEventQueue.java:843)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$8(IdeEventQueue.java:454)</span><br><span class="line">	at com.intellij.openapi.progress.impl.CoreProgressManager.computePrioritized(CoreProgressManager.java:773)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.lambda$dispatchEvent$9(IdeEventQueue.java:453)</span><br><span class="line">	at com.intellij.openapi.application.impl.ApplicationImpl.runIntendedWriteActionOnCurrentThread(ApplicationImpl.java:822)</span><br><span class="line">	at com.intellij.ide.IdeEventQueue.dispatchEvent(IdeEventQueue.java:507)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)</span><br><span class="line">	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)</span><br><span class="line">Caused by: java.lang.ClassCastException: class org.apache.xerces.parsers.SAXParser cannot be cast to class org.xml.sax.XMLReader (org.apache.xerces.parsers.SAXParser is in unnamed module of loader com.intellij.util.lang.UrlClassLoader @59e84876; org.xml.sax.XMLReader is in unnamed module of loader com.intellij.ide.plugins.cl.PluginClassLoader @7136ed80)</span><br><span class="line">	at org.dom4j.io.SAXHelper.createXMLReader(SAXHelper.java:109)</span><br><span class="line">	at org.dom4j.io.SAXReader.createXMLReader(SAXReader.java:896)</span><br><span class="line">	at org.dom4j.io.SAXReader.getXMLReader(SAXReader.java:732)</span><br><span class="line">	at org.dom4j.io.SAXReader.read(SAXReader.java:464)</span><br><span class="line">	... 45 more</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>这两天想开发学习一下 Idea的开发插件，主要目的是为了学习，其中有一个需求是读取一下目录中的xml文件，并修改其中的部分节点。</p>
+<p>java操作xml，当然是需要使用成熟的框架了，我选择了使用dom4j框架进行操作。由于Idea插件开发需要使用Gradle进行包的管理，也算是我首次使用吧。结果出的最大问题源头也是Gradle应用.整整花费了2天时间，解决这个问题。</p>
+<p><strong>问题都是共性的，相信肯定有同学走过我这个弯路，或者碰到同款的问题，如果不是同一个项目背景下发生的问题，可以跳过阅读解决思路部分，直接看总结。</strong></p>
+<h2 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h2><p>起初我以为，就这么一个错误嘛!百度一搜肯定有同款问题，实在不行google搜一圈，也能解决。<br>堆栈信息第一行，复制粘贴，百度 没有! 谷歌 没有! idea 社区 没有! dom4j社区 没有! stackoverflow 没有!!!<br>根据多年的开发经验，一旦一个问题在网上搜不到，两种原因：1、搜索关键词有问题。2、使用方式完全有问题。<br>既然搜不到，这种情况下要么反馈到社区（前提你你得找到合适的社区），要么只能跟着堆栈信息看源代码了。</p>
+<p>社区太慢了，还是自己先来吧！<br>先看堆栈信息提炼出来的描述</p>
+<ol>
+<li>org.apache.xerces.parsers.SAXParser 不能转换成 org.xml.sax.XMLReader </li>
+<li>org.apache.xerces.parsers.SAXParser 的classLoader 是  com.intellij.util.lang.UrlClassLoader @59e84876</li>
+<li>org.xml.sax.XMLReader 的classLoader 是 com.intellij.ide.plugins.cl.PluginClassLoader @7136ed80</li>
+</ol>
+<p>跟踪代码看看 这两个类到底是什么关系 为什么不能转换<br><img src="https://co.jxyp.cc/upload/2021/01/1610698033402-5a71f15ed90e421d98d580fe89bd8a0e.jpg" alt="SAXParser的类"><br><img src="https://co.jxyp.cc/upload/2021/01/1610698039500-f6843e28da1c4b1d9c6bd9ed1e8816c4.jpg" alt="继承关系"><br><img src="https://co.jxyp.cc/upload/2021/01/1610698025463-8e38ef4c3ebf4230b2a5ebadadf84467.jpg" alt="XmlReader的类"><br>图片中的继承关系来看，没有任何问题啊 SAXParser 是 XmlReader的实现类啊，不能转换是什么鬼，其实这个时候我一直忽略了后面的 classLoader的提示。解开问题最关键的信息就是classLoader不同的提示,如果早点重视这个提示，中间也不会耗费了那么长的时间走弯路。</p>
+<p>查看了一下 com.intellij.util.lang.UrlClassLoader 是Idea插件开发工具自定义的classLoader<br><img src="https://co.jxyp.cc/upload/2021/01/1610698593922-078353bee89b4c63a1beee947138c988.jpg" alt="UrlClassLoader类"></p>
+<p>com.intellij.ide.plugins.cl.PluginClassLoader 也是Idea插件开发工具自定义的classLoader<br><img src="https://co.jxyp.cc/upload/2021/01/1610698598411-b06ec01cd6224f0487ff07727668182d.jpg" alt="XMLReader类"></p>
+<p>仔细研究了一下，idea插件开发包，自定义了两种类加载器。从作用上来讲 UrlClassLoader 是用来加载Idea插件开发的所有基础jar包，基础jar包里面包含了大量的常用工具包。PluginClassLoader 是用来加载用户自定义java类的加载器。<br>而且他们是继承关系 PluginClassLoader 完全继承了 UrlClassLoader。<br>那回到错误上说 把一个父类加载器生成的对象 SAXParser 转换成子加载器生成的对象 XMLReader 是不行的。 虽然SAXParser 是 XMLReader 的子类但是加载器确是相反的<br>什么问题能造成这种奇特的现象出现？？？</p>
+<p><strong>等等，还有一个问题</strong> org.xml.sax.XMLReader 这个类可是Java11自带的类。是放在rt.jar里面的，这个是祖先 BootstrapClassLoader加载的， 你一个小小的PluginClassLoader子类加载器，能加载他？双亲委派模式呢？乱加载jdk对象那还得了！！！ 除非~~ 我在代码里重新定义了或者引用了org.xml.sax.XMLReader。</p>
+<p>带着疑问，我们来看看 dom4j 从调用read()方法代码的入口，到底干了哪些事情，毕竟错误是从这个方法里面抛出来的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SAXReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SAXReader</span>();</span><br><span class="line"><span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;/Users/von/Downloads/untitled.xml&quot;</span>);</span><br><span class="line"><span class="type">Document</span> <span class="variable">document</span> <span class="operator">=</span> reader.read(file); </span><br><span class="line">System.out.println(document.getRootElement().getName());</span><br></pre></td></tr></table></figure>
+
+<p>1.代码调用顺序<br><img src="https://co.jxyp.cc/upload/2021/01/1610701097027-f0a96997908b42049303c02a158672f7.jpg" alt="1610701097027.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701101422-464c6355e8fa45ab828cad9f66aba513.jpg" alt="1610701101422.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701105999-dee55aea514c47528c1fe46b9e629714.jpg" alt="1610701105999.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701109949-b5c262096e974cd29acaafe34f21a282.jpg" alt="1610701109949.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701114099-c541555fa29445e4be7dda756300eb3b.jpg" alt="1610701114099.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610701118330-c49c733bad1142d087125aedd561c7a1.jpg" alt="1610701118330.jpg"></p>
+<p>调试的时候发现在最后一张图 SAXParserFactory.newInstance()，其实已经报错了，他给出的错误信息更加的准确，而抛出到控制台的异常反而是后续的补偿功能失效的异常。<br>这步的堆栈信息 拿出来是这样的</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class org.apache.xerces.jaxp.SAXParserFactoryImpl cannot be cast to class javax.xml.parsers.SAXParserFactory (</span><br><span class="line">org.apache.xerces.jaxp.SAXParserFactoryImpl is in unnamed module of loader com.intellij.util.lang.UrlClassLoader @59e84876; </span><br><span class="line">javax.xml.parsers.SAXParserFactory is in unnamed module of loader com.intellij.ide.plugins.cl.PluginClassLoader @6dc97916)            	</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>错误信息与原始堆栈给出的错误，都是出自同一套模板，只是把两个类分别换成了 SAXParserFactoryImpl 与 SAXParserFactory 不能转换。</p>
+<p>SAXParserFactory 同样是jdk自带的 rt.jar包里面的类，本应该属于BootstrapClassLoader加载的对象，又被 PluginClassLoader这个加载器给加载了，不用想了，肯定是我们自己引用的包里面包含了 SAXParserFactory 的类，因为之后我们自己写的java文件和引用的jar包，才会被PluginClassLoader加载。</p>
+<p>最后真的被找到了，果不其然</p>
+<p><img src="https://co.jxyp.cc/upload/2021/01/1610702064251-3389cb1b948043478a1b766119a82c17.jpg" alt="1610702064251.jpg"><br><img src="https://co.jxyp.cc/upload/2021/01/1610702068545-e511c101a87d40899155e0d3e99be47e.jpg" alt="1610702068545.jpg"></p>
+<p>这个jar包居然 Gradel引用某一个java包的时候居然会把他所有的依赖都加载过来，其中的一个jar包pull-parser.jar 居然全包抄了一遍jdk的代码。。。。。。。。。实在想象不到他的用途在哪里。</p>
+<p>Gradel 里面果断排除了这个包<br><img src="https://co.jxyp.cc/upload/2021/01/1610702351468-8610e0dfe28a45248cb38b8e2c60f2aa.jpg" alt="1610702351468.jpg"></p>
+<p>一切都正常了！！！！！！ 泪崩。。。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>这种问题的产生是由jar包冲突引起的，只是抛出的错误有误导性。需要对无法转换的类进行跟踪，查看到底是哪里冲突了。</li>
+<li>要看懂解决思路部分，必须要对 JVM 的基础知识 ClassLoader部分有深入的了解。</li>
+<li>源代码的阅读一定要仔细，碰到不明白的问题，必须停下来补充相关知识。否则越看越无厘头。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/" data-id="clha9qkby00007u9k48z9hfrw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-字符串相似度比较（编辑距离算法）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/" class="article-date">
+  <time datetime="2023-05-05T07:59:15.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/">字符串相似度比较（编辑距离算法）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h1><p>前段时间开发一个功能，关于<strong>两个字符串相似度比较</strong>的需求，在网上翻了翻，大多都推荐<strong>编辑距离算法</strong>来实现这个功能。起初，我在想，我两个字符串比较，跟编辑距离有啥关系？为啥编辑距离能解决相似度比较的问题？</p>
+<p>下面解答一下这个问题<br>如果我们需要比较两个字符串的相似度，<br>简单一点的例子 一个字符比如a与a很容易得出相似度100%，两个字符串比较也很容易 ab与ac相似度50%。bac与adf相似度33%，这种相似度，我们靠人脑和生活经验很轻松就能实现，但是如果是10个字母呢？字母之间又有很多排列组合，怎么计算他们的相似度？所以我们一定需要某种规则，某种算法，这个算法一定是要经过严格的数学证明，可行的，能得出两个字符串之间最大的差异值，通过这个值来计算相似度。那么这个算法有没有呢？ 答案是有，肯定有很多种算法。看这里<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/91645988">计算字符串相似度</a></p>
+<p>本文主要讲解编辑距离算法。<br>由于网上很多资源都是很凌乱，对于不搞算法的人来说理解起来特别困难，找了很多个博文，东拼西凑，才把完整的理论弄懂，最后自己再总结一下，便于理解。</p>
+<h2 id="算法细节"><a href="#算法细节" class="headerlink" title="算法细节"></a>算法细节</h2><p>那么我们看下编辑距离算法的原理<br>指两个字串之间，由一个转成另一个所需的最少编辑操作次数，如果它们的距离越大，说明它们越是不同。许可的编辑操作包括将一个字符替换成另一个字符，插入一个字符，删除一个字符。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chichoxian/article/details/53944188">算法技术细节</a></p>
+<p>对于我们普通开发人员来说，直接套用算法公式就行了，按照算法写代码了。</p>
+<p>根据这个算法我们已经可以获得两个字符串最短的编辑距离了，那么相似度计算还需要加上最后一个公式<br> <strong>1 - ( 编辑距离 / 两个字符串的最大长度）</strong><br>这样可以得到符合我们语义的相似度。</p>
+<h3 id="质疑算法"><a href="#质疑算法" class="headerlink" title="质疑算法"></a>质疑算法</h3><p>如果质疑算法的正确性，可以看这里 <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/425049057/answer/1583825407">编辑距离算法证明</a></p>
+<h1 id="算法出处"><a href="#算法出处" class="headerlink" title="算法出处"></a>算法出处</h1><h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><p>20世纪50年代初，美国数学家贝尔曼（R.Bellman）等人在研究多阶段决策过程的优化问题时，提出了著名的最优化原理，从而创立了动态规划。</p>
+<h2 id="编辑距离"><a href="#编辑距离" class="headerlink" title="编辑距离"></a>编辑距离</h2><p>俄罗斯科学家Vladimir Levenshtein在1965年提出这个概念,该算法主要基于<strong>动态规划</strong>的思想实现的。</p>
+<h1 id="算法实现（java）"><a href="#算法实现（java）" class="headerlink" title="算法实现（java）"></a>算法实现（java）</h1><p>核心算法部分通过了LeetCode测试，完全可以使用到生产环境，遗憾的是时间复杂度比较高O(n²)，由于没有刷极限低时间复杂度算法的心思。<br>如果有兴趣，可以网上找一找。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line">public class EditDistance &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 算法的主要实现</span><br><span class="line">     * @param orign</span><br><span class="line">     * @param target</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private  static  int dp(String orign,String target)&#123;</span><br><span class="line"></span><br><span class="line">        //构造数组</span><br><span class="line">        int [][] table = new int[orign.length() + 1][target.length() + 1];</span><br><span class="line">        char [] oa = orign.toCharArray();</span><br><span class="line">        char [] ta = target.toCharArray();</span><br><span class="line"></span><br><span class="line">        if (oa.length == 0 &amp;&amp; ta.length == 0)&#123;</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (oa.length == 0)&#123;</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (ta.length == 0)&#123;</span><br><span class="line">            return 1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; oa.length+1; i++) &#123;</span><br><span class="line">            for (int j = 0; j &lt; ta.length+1; j++) &#123;</span><br><span class="line"></span><br><span class="line">                //初始化数组</span><br><span class="line">                if (i == 0)&#123;</span><br><span class="line">                    table[i][j] = j;</span><br><span class="line">                    continue;</span><br><span class="line">                &#125;</span><br><span class="line">                if (j == 0)&#123;</span><br><span class="line">                    table[i][j] = i;</span><br><span class="line">                    continue;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                //实现算法</span><br><span class="line">                int x = i - 1;</span><br><span class="line">                int y = j - 1;</span><br><span class="line"></span><br><span class="line">                //计算增加，删除，编辑，的最短距离</span><br><span class="line">                int add = table[i-1][j] + 1;</span><br><span class="line">                int del = table[i][j-1] + 1;</span><br><span class="line">                int cha = table[i-1][j-1] + (oa[x] == ta[y] ? 0 : 1);</span><br><span class="line"></span><br><span class="line">                int min = Math.min(Math.min(add, del), cha);</span><br><span class="line">                table[i][j] = min;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;编辑矩阵为：&quot;);</span><br><span class="line">        printArrays(table);</span><br><span class="line"></span><br><span class="line">        int redata = table[orign.length()][target.length()];</span><br><span class="line">        System.out.println(&quot;编辑距离最小是：&quot; + redata);</span><br><span class="line">        return redata;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 打印二维数组细节</span><br><span class="line">     * @param table</span><br><span class="line">     */</span><br><span class="line">    private static void printArrays(int [][] table)&#123;</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; table.length; i++) &#123;</span><br><span class="line">            StringBuilder sb = new StringBuilder();</span><br><span class="line">            for (int j = 0; j &lt; table[0].length; j++) &#123;</span><br><span class="line">                sb.append(table[i][j]);</span><br><span class="line">                sb.append(&quot;,&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(sb.toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 相似度计算</span><br><span class="line">     * @param dp</span><br><span class="line">     * @param word1</span><br><span class="line">     * @param word2</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private static float similar(int dp,String word1,String word2)&#123;</span><br><span class="line"></span><br><span class="line">        float result = 1;</span><br><span class="line">        int maxLength = Math.max(word1.length(), word2.length());</span><br><span class="line">        if (maxLength!=0)&#123;</span><br><span class="line">            result = 1 - ((float)dp / maxLength);</span><br><span class="line">        &#125;</span><br><span class="line">        return  result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String word1 = &quot;11231&quot;;</span><br><span class="line">        String word2 = &quot;11&quot;;</span><br><span class="line">        int dp = dp(word1, word2);</span><br><span class="line"></span><br><span class="line">        float resualt = similar(dp, word1, word2);</span><br><span class="line">        System.out.println(&quot;两个字符串之间的相似度为:&quot; + resualt);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/" data-id="clha9qkc700067u9khc9ua0ro" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-各种分布式事务技术的理解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/%E5%90%84%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%8A%80%E6%9C%AF%E7%9A%84%E7%90%86%E8%A7%A3/" class="article-date">
+  <time datetime="2023-05-05T07:58:39.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/05/05/%E5%90%84%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%8A%80%E6%9C%AF%E7%9A%84%E7%90%86%E8%A7%A3/">各种分布式事务技术的理解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>开发至今项目中从来有没有用过分布式事务，之前对分布式事务的理解，都是从网上到处看，到处翻，从来也没有系统的看过。借着研究SpringColudNacos源码的时候，无意间看到了阿里巴巴的Seata项目。也就顺便研究了一下原理。</p>
+<p>为了应付面试，从网上到处找分布式事务相关的内容，一会看PC,一会又翻到TCC。看了一堆原理，文章质量参差不齐，不清楚他们之间的关系，有时候把协议当成框架，有时候又把框架当成算法。又不知道怎么运用到实际开发环境当中去。面试的时候基本也在瞎扯。</p>
+<p>整体梳理了一遍之后，我总结一下对分布式事务的总体理解，本文不做原理详细的讲解。</p>
+<p>下面几个名词之间的关系：</p>
+<ul>
+<li>2PC/3PC是协议 是算法。并不是具体实现。</li>
+<li>XA规范是基于2PC协议制定的一种规范，规范描述了全局的事务管理器与局部的资源管理器之间的接口，XA使用两阶段提交来保证所有资源同时提交或回滚任何特定的事务</li>
+<li>各家数据库根据XA规范设计出自己的分布式事务功能。</li>
+<li>TCC是通过代码实现分布式事务的一种开发模式。</li>
+<li>Saga也是一种算法或者实现模式。</li>
+</ul>
+<h2 id="分布式事务理论"><a href="#分布式事务理论" class="headerlink" title="分布式事务理论"></a>分布式事务理论</h2><h3 id="2PC（Two-phase-commit-protocol）的概念。"><a href="#2PC（Two-phase-commit-protocol）的概念。" class="headerlink" title="2PC（Two-phase commit protocol）的概念。"></a>2PC（Two-phase commit protocol）的概念。</h3><p>简单明了的解释，之前开发的时候都使用的事务都是直接提交，现在多了一个预提交的概念，此时相当于提交，但是不真正提交。确定其他事务无误后，再调用数据库提交接口真正提交。由于这个方案对性能影响比较大，mysql使用2阶段提交直接将事务级别提升至序列化。但凡用到分布式环境的流量一般都比较大，使用此方案的比较少。</p>
+<h3 id="3PC（Three-phase-commit-protocol）的概念"><a href="#3PC（Three-phase-commit-protocol）的概念" class="headerlink" title="3PC（Three-phase commit protocol）的概念"></a>3PC（Three-phase commit protocol）的概念</h3><p>CanCommit、PreCommit 和 DoCommit 三个阶段<br>由于2PC，在单点故障的情况下，会有资源锁死的问题，所以3PC在2PC的概念加上了超时的机制，且增加了一个CanCommit阶段。相当于2PC的升级版本。但整体的交互过程更长了，性能有所下降，并且还是会存在数据不一致问题。<br>网上关于3阶段提交的资料极少，基本都是描述理论过程。没有找到具体的实现。</p>
+<h3 id="XA规范"><a href="#XA规范" class="headerlink" title="XA规范"></a><a target="_blank" rel="noopener" href="http://pubs.opengroup.org/onlinepubs/009680699/toc.pdf">XA规范</a></h3><p>分布式事务其实很早就提出了，最早的提出的分布式事务的是<strong>XA规范</strong>，XA是由X/Open组织提出的分布式事务的规范，主要是给数据库提供一个标准，各家数据库可以根据这个标准完成自己的分布式事务协议。mysql从1.5版本开始innodb开始支持XA规范。</p>
+<h3 id="TCC-Try-Confirm-Cancel"><a href="#TCC-Try-Confirm-Cancel" class="headerlink" title="TCC (Try Confirm Cancel)"></a>TCC (Try Confirm Cancel)</h3><p>上面两段2pc和3pc的概念都是基于数据库事务功能的，TCC概念是脱离数据库，直接用嵌入业务代码的方式实现。每个需要实现分布式事务的业务代码，都需要写。</p>
+<ul>
+<li>try阶段 将所有调用链相关的数据都做成预处理状态，比如订单修改成待更新，库存修改成待修改预扣。说白了就是都增加一个中间的过渡状态。</li>
+<li>confirm阶段 当所有的try都成功了，那么就可以进入提交阶段了，将上述的订单修改成已完成，库存修改成扣减。</li>
+<li>cancel阶段 如果有一个没成功，那么整体撤销，调用各个微服务的代码将中间状态撤回。</li>
+</ul>
+<p>从描述上已经看到了，这么一套代码写下来，调试成功，人都累死了。各种异常再排列组合，测试还不一定能测到全部的异常。如果再多几套分布式事务，估计没几个人想写这快代码。好的一点是，这块可以使用国内的几个开源框架，减缓不少负担。例如：ByteTCC，TCC-transaction，Himly。</p>
+<h3 id="Saga"><a href="#Saga" class="headerlink" title="Saga"></a>Saga</h3><p>这个模式是来自于1987年Hector GM和Kenneth Salem论文（那个年代，我还没出生，分布式事务的解决概念都已经抛出来了，想想我们国家落后了多少）。<br>saga的解决方法分为两种</p>
+<ol>
+<li>基于事件传递（编排 Choreography）的解决方案。<br>具体就是，微服务调用顺序提前编排好，每个微服务都处理好自己的事务之后，通知下层微服务，或者下层微服务自己监听事件，来处理自己的事件，中间如果有处理异常的事务，可以返回失败事件，上层服务再回滚处理，一层层回滚。 这种默认基本都不推荐用，因为事件一旦过多，监听的逻辑理解起来比较复杂，编排不好，还会出现循环引用。</li>
+<li>基于协调（协调者 Orchestration）的解决方案<br>增加协调者模块，协调者主要负责各个微服务之间的调用关系，回滚关系。每个微服务按照协调者的指令办事就行。<br>由于协调者要处理各个微服务之间的状态，所以最好的实现方式是使用状态机来实现协调者的功能。</li>
+</ol>
+<hr>
+<h2 id="Seata"><a href="#Seata" class="headerlink" title="Seata"></a>Seata</h2><p>seata 是阿里巴巴开源出的一款关于分布式事务的解决方案和框架。<br>为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。</p>
+<h3 id="AT模式-（Automatic-Branch-Transaction-Mode）"><a href="#AT模式-（Automatic-Branch-Transaction-Mode）" class="headerlink" title="AT模式 （Automatic (Branch) Transaction Mode）"></a>AT模式 （Automatic (Branch) Transaction Mode）</h3><p>这个模式不知道是不是Seata自创的，没找着相关的出处资料。上面看过那么多的解决方案，感觉AT模式相当于集合各家的优点，并且依照实际开发中的场景（接地气），创造出来的一个分布式事务管理方案。他的原理里面能从上面几种模式中都能找到影子。比如二阶段的模式，TC协调者，回滚机制。</p>
+<p>AT模式大概是2PC模式的一种变种，也是分为两阶段。<br>第一阶段开启一个大事务，各个微服务开启小事务，小事务做完马上就把本地事务全部提交了，并且生成一个回滚的信息，这个回滚信息是通过Seata的数据库代理实现的，主要会从数据库操作语句中提炼出回滚信息。</p>
+<p>第二阶段TC根据全部微服务的提交状态，决定大事务是否是整体提交还是整体回滚。如果TC发现微服务全部提交成功，就把大事务提交，大事务提交以后会删除回滚信息，以及其他一些工作。如果TC发现只有部分微服务提交成功，就把大事务回滚，里面的微服务一个个根据回滚信息全部回滚。</p>
+<p>这种问题情况想肯定会碰到脏读的问题，所以又引入了全局锁，和本地锁的概念，用来限制脏读发生。</p>
+<h3 id="XA模式"><a href="#XA模式" class="headerlink" title="XA模式"></a>XA模式</h3><p>有了上面XA相关的理论支持，这个就可以很好理解了，基于数据库的XA规范实现。他与AT模式的切换只要通过 Seata 的数据源切换即可完成。</p>
+<h3 id="TCC模式"><a href="#TCC模式" class="headerlink" title="TCC模式"></a>TCC模式</h3><p>seata将tcc模式也抽象成两个阶段，不过这两个阶段。<br>第一阶段 准备<br>第二阶段 提交<br>第二阶段 回滚<br>区别就是 所有阶段的处理，都需要自己写业务代码来实现。seata只负责框架层的调度。<br>一般使用seata的都希望使用他们的特性来减轻开发复杂度的。所以这个模式官方介绍的很少。</p>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>本文主要介绍了一些如何理解分布式事务的协议和框架，旨在于梳理技术和帮助概念理解。具体的详细技术细节，请参考引用链接。有理解错误的地方，欢迎留言指正。</p>
+<h2 id="参考引用"><a href="#参考引用" class="headerlink" title="参考引用"></a>参考引用</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/X/Open_XA">维基百科 X/Open XA</a><br><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/xa.html">Mysql 官方文档 Mysql-XA</a><br><a target="_blank" rel="noopener" href="http://www.tianshouzhi.com/api/tutorials/distributed_transaction">分布式事务概述</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jajian/p/10014145.html">TCC分布式事务</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/95852045">Saga分布式事务</a><br><a target="_blank" rel="noopener" href="http://seata.io/zh-cn/docs/overview/what-is-seata.html">Seata 官网</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/%E5%90%84%E7%A7%8D%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%8A%80%E6%9C%AF%E7%9A%84%E7%90%86%E8%A7%A3/" data-id="clha9qkc800077u9k61nf0aan" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Sentinel-和-Hystrix-技术选型对比" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/Sentinel-%E5%92%8C-Hystrix-%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94/" class="article-date">
+  <time datetime="2023-05-05T07:57:48.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/05/05/Sentinel-%E5%92%8C-Hystrix-%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94/">Sentinel 和 Hystrix 技术选型对比</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d1f22a555065">Sentinel 和 Hystrix 技术选型对比</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/Sentinel-%E5%92%8C-Hystrix-%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94/" data-id="clha9qkc300017u9k735e0xan" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Spring-Cloud中Hystrix、Ribbon及Feign的熔断关系是什么" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/Spring-Cloud%E4%B8%ADHystrix%E3%80%81Ribbon%E5%8F%8AFeign%E7%9A%84%E7%86%94%E6%96%AD%E5%85%B3%E7%B3%BB%E6%98%AF%E4%BB%80%E4%B9%88/" class="article-date">
+  <time datetime="2023-05-05T07:56:46.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/05/05/Spring-Cloud%E4%B8%ADHystrix%E3%80%81Ribbon%E5%8F%8AFeign%E7%9A%84%E7%86%94%E6%96%AD%E5%85%B3%E7%B3%BB%E6%98%AF%E4%BB%80%E4%B9%88/">Spring Cloud中Hystrix、Ribbon及Feign的熔断关系是什么?</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>说明了这三者之间的关系，以及配置的要点。</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wudimanong/p/11224494.html">Hystrix Ribbon Feign</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/Spring-Cloud%E4%B8%ADHystrix%E3%80%81Ribbon%E5%8F%8AFeign%E7%9A%84%E7%86%94%E6%96%AD%E5%85%B3%E7%B3%BB%E6%98%AF%E4%BB%80%E4%B9%88/" data-id="clha9qkc600057u9k0uu4eipt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-程序员为什么要写博客" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/05/05/%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E5%8D%9A%E5%AE%A2/" class="article-date">
+  <time datetime="2023-05-05T07:56:09.000Z" itemprop="datePublished">2023-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/05/05/%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E5%8D%9A%E5%AE%A2/">程序员为什么要写博客</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="回馈社区"><a href="#回馈社区" class="headerlink" title="回馈社区"></a>回馈社区</h2><p>先问自己一个问题。</p>
+<p>你是否在工作当中因为某些技术问题，导致你项目延期的？</p>
+<p>技术经理给你分配一个任务（可能使用到某种技术，网上一搜一大把文档），你是否会因为自己不懂，而去拒绝？</p>
+<p>大多数的答案是不会延期，不会拒绝，心里想想，是谁给了你这种底气？</p>
+<p>是因为社区的各种帮助，各种详尽的资料，都在无偿的帮助你，给了你底气。</p>
+<p>工作期间中无数的技术困难，大多数都是从百度，CSDN, 简书，Stack Overflow,Github 中获取答案的，每当困扰自己的问题被解决后，心里由衷的感激那些记载解决方案的博主。正是由于这些人的存在，才让我们处理问题的时候感觉到方便。做项目的时候心里有底气。让你成长，让你加薪升职。人不能永远的只知道获取，不懂得回馈。</p>
+<p>有些情况下，在网上无法找到解决问题的方案，只能通过自己去研究，最终解决了，记录下来，可以帮助更多的人。</p>
+<h2 id="备忘录"><a href="#备忘录" class="headerlink" title="备忘录"></a>备忘录</h2><p>工作多年了，回头望望，自己其实做过很多东西，但是又好像没做啥，主要是因为没有记录，人到中年，生活的各种琐事，会让你的忘性会越来越大，如果自己做过哪些东西没有记录的话，就会有这种感觉。尤其是在换工作面试的时候，面试官问你做过哪些项目？有那些细节？有那些拿得出手的项目经验？如果没有备忘录，自己会被这种死亡3连，直接问蒙掉。</p>
+<h2 id="写博客提升技术细节"><a href="#写博客提升技术细节" class="headerlink" title="写博客提升技术细节"></a>写博客提升技术细节</h2><p>我之前听过一句话，如何能提升自己某一项技能？ 最好的方式是教会别人这项技能。</p>
+<p>这点我深有感触，工作当中，团队经常会有技术分享，让我来给大家讲讲某一项技术，为了能给别人讲解，我必须清晰的了解这项技术的细节，讲解之前做很多准备，生怕自己在讲解当中，答不出别人提出问题，导致尴尬下不了台。你在讲解的过程中，自己也把这项技术也深入的过了一遍。</p>
+<p>写博客应该也是同理，你写的博客，将来很可能会有成千上万的人会浏览，如果水平太差，细节经不起推敲，那很遗憾，回应应该大多都是指责。</p>
+<p>好了，大概就写到这里。说一说自己的心里感受，另外给自己打个气，希望能坚持下去</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/05/05/%E7%A8%8B%E5%BA%8F%E5%91%98%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E5%8D%9A%E5%AE%A2/" data-id="clha9qkcc00097u9kgf8lb52g" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Mac-os-11-0-1-Big-Sur-升级之后无法使用有线网" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2023/05/05/Mac-os-11-0-1-Big-Sur-%E5%8D%87%E7%BA%A7%E4%B9%8B%E5%90%8E%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E6%9C%89%E7%BA%BF%E7%BD%91/" class="article-date">
@@ -151,7 +648,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/05/05/Mac-os-11-0-1-Big-Sur-%E5%8D%87%E7%BA%A7%E4%B9%8B%E5%90%8E%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E6%9C%89%E7%BA%BF%E7%BD%91/" data-id="clha9ft7i0000xx9kae0d6v41" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2023/05/05/Mac-os-11-0-1-Big-Sur-%E5%8D%87%E7%BA%A7%E4%B9%8B%E5%90%8E%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E6%9C%89%E7%BA%BF%E7%BD%91/" data-id="clha9qkc400027u9k916s6n13" class="article-share-link">Share</a>
       
       
     </footer>
@@ -192,7 +689,23 @@
       <ul>
         
           <li>
-            <a href="/2023/05/05/Mac-os-11-0-1-Big-Sur-%E5%8D%87%E7%BA%A7%E4%B9%8B%E5%90%8E%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8%E6%9C%89%E7%BA%BF%E7%BD%91/">Mac os(11.0.1 Big Sur) 升级之后无法使用有线网</a>
+            <a href="/2023/05/05/JAVA8-%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1%E5%8E%BB%E9%87%8D%E5%86%99%E6%B3%95/">JAVA8 列表对象去重写法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E7%94%A8python%E5%86%99%E4%BA%86%E4%B8%A4%E4%B8%AA%E7%88%AC%E8%99%AB/">用python写了两个爬虫</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E4%B8%80%E8%87%B4%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">一致哈希算法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/Dom4j-Gradle-%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98/">Dom4j + Gradle 使用问题</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E4%BC%BC%E5%BA%A6%E6%AF%94%E8%BE%83%EF%BC%88%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB%E7%AE%97%E6%B3%95%EF%BC%89/">字符串相似度比较（编辑距离算法）</a>
           </li>
         
       </ul>
